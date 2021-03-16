@@ -29,6 +29,7 @@
 
 // module.exports = UserModel
 
+
 const Sequelize = require('sequelize'); 
 const db = require('../server/connection');
 
