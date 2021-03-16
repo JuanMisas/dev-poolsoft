@@ -24,6 +24,7 @@ app.set('view engine', 'ejs');
 passport.use(new PassportLocal(async function(username, password, done){
     response = await userController.findUser(username, password);
     if(response == true) {
+        // console.log(response, 'asdfasdfasdf', 1232);
         return done(null,{ id: 1, name: "Cody" });
     }else{
         done(null, false);
