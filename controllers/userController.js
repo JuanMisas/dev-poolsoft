@@ -5,7 +5,7 @@ const server = require('../server/server');
 module.exports = {
     /* Método que crea un usuario dados el NameUser, PasswordUser, RoleUser */
     async createUser(username, password, role) {
-        await User.create({NameUser: username, PasswordUser: password, RoleUser: role});
+        await User.create({ NameUser: username, PasswordUser: password, RoleUser: role });
     },
 
     /* Método que encuentra a un usuario por el username y el password. */ 
@@ -24,13 +24,17 @@ module.exports = {
 
     /* Actualizar datos de un usuario dado el idUser */
     async updateUser(id, username, password, role) {
-        user = User.find({ where: { idUser: id } })
+        user = await User.findByPk(id);
         if (user != null) {
-            User.update({
+            await User.update({
                 NameUser: username,
                 PasswordUser: password,
                 RoleUser: role
-            })
+            }, { 
+                where : { idUser: id}
+            }).catch(function () {
+                console.log("Promise Rejected");
+           });
         }
     },
 

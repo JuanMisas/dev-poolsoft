@@ -7,6 +7,8 @@ const path = require('path');
 const app = express();
 const userController = require('../../controllers/userController');
 const User = require('../../models/ps_user');
+const bcrypt = require('bcryptjs');
+const { check, validationResult } = require('express-validator');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser('mi ultra hiper secreto'));
@@ -30,28 +32,28 @@ passport.use(new PassportLocal(async function(username, password, done){
 }));
 
 /* Serialización del usuario autenticado */
-passport.serializeUser(function(user,done){
-    done(null,user.id);
+passport.serializeUser(function(user, done){
+    done(null, user.id);
 });
 
 /* Deserialización del usuario autenticado */
-passport.deserializeUser(function(id,done){
+passport.deserializeUser(function(id, done){
     user = User.findByPk(id);
     done(null, {id: user.idUser, name: user.NameUser });
 });
 
 /* Redireccionamiento desde "/" */
-app.get("/",(req,res,next)=>{
+app.get("/", (req, res, next) => {
     // Si no hemos iniciado sesión redireccionar a /login
     if(req.isAuthenticated()) return next();
     res.redirect("/login");
-},(req,res)=>{
+}, (req, res) => {
     // Si ya iniciamos mostrar bienvenida
     res.render("pages/index");
 });
 
 /* Redireccionamiento al login */
-app.get("/login",(req,res)=>{
+app.get("/login", (req, res) => {
     res.render("pages/login/login");
 });
 
@@ -62,12 +64,25 @@ app.post("/login", passport.authenticate('local', {
 }));
 
 /* Redireccionamiento a recuperar la contraseña */
-app.get("/recover",(req,res)=>{
+app.get("/recover", (req, res) => {
     res.render("pages/login/recover");
 });
 
-app.get("/test",(req,res)=>{
-    userController.updateUser(1, 'momo', 'momo123', 1);
+app.post("/register", [
+    check('username', 'El username es obligatorio').not().isEmpty(),
+    check('password', 'El password es obligatorio').not().isEmpty()
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errores: errors.array() })
+    }
+    req.body.password = bcrypt.hashSync(req.body.password, 10);
+    await userController.createUser(req.body.username, req.body.password, req.body.role);
+});
+
+/* Método para testear. NO BORRAR */
+app.get("/test", (req, res) => {
+    userController.deleteUser(124);
     res.render("pages/login/recover");
 });
 
