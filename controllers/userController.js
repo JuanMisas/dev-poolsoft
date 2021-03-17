@@ -11,33 +11,27 @@ module.exports = {
     /* Método que encuentra a un usuario por el username y el password. */ 
     /* Devuelve un objeto json de tipo User. */
     async findUser(username, password) {
-        console.log('epa')
         const user = await User.findOne({ where: { NameUser: username, PasswordUser: password } });
-        console.log(user);
         return user;
     },
 
     /* Método que encuentra a un usuario por el idUser. */ 
     /* Devuelve un objeto json de tipo User. */
-    async findUser(id) {
+    async findUserById(id) {
         const user = await User.findByPk(id);
         return user;
     },
 
     /* Actualizar datos de un usuario dado el idUser */
     async updateUser(id, username, password, role) {
-        User.find({ where: { idUser: id } })
-        .on('success', function (user) {
-          // Asegurarse de que el usuario existe en la BD
-          if (user) {
-            user.update({
-              NameUser: username,
-              PasswordUser: password,
-              RoleUser: role
+        user = User.find({ where: { idUser: id } })
+        if (user != null) {
+            User.update({
+                NameUser: username,
+                PasswordUser: password,
+                RoleUser: role
             })
-            .success(function () {})
-          }
-        })
+        }
     },
 
     /* Método que elimina un usuario dado el idUser */

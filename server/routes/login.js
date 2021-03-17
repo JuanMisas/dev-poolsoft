@@ -22,9 +22,7 @@ app.set('view engine', 'ejs');
 /* Autentica si el usuario ingresado en el login en válido */
 passport.use(new PassportLocal(async function(username, password, done){
     response = await userController.findUser(username, password);
-    console.log(response, 'epaaaa');
     if(response != null) {
-        
         return done(null,{ id: response.idUser, name: response.NameUser });
     }else{
         done(null, false);
