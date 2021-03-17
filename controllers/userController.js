@@ -3,48 +3,46 @@ const User = require('../models/ps_user');
 const server = require('../server/server');
 
 module.exports = {
-    async createUser(req, res) {
-        const jane = await User.create({NameUser: 'Post two', PasswordUser: 'lalala', RoleUser: 1});
-        console.log("Jane's auto-generated ID:", jane.idUser);
+    /* Método que crea un usuario dados el NameUser, PasswordUser, RoleUser */
+    async createUser(username, password, role) {
+        await User.create({NameUser: username, PasswordUser: password, RoleUser: role});
     },
 
+    /* Método que encuentra a un usuario por el username y el password. */ 
+    /* Devuelve un objeto json de tipo User. */
     async findUser(username, password) {
+        console.log('epa')
         const user = await User.findOne({ where: { NameUser: username, PasswordUser: password } });
-        if (user == null) {
-            return false;
-        } else {
-            return true;
-        }
+        console.log(user);
+        return user;
     },
+
+    /* Método que encuentra a un usuario por el idUser. */ 
+    /* Devuelve un objeto json de tipo User. */
+    async findUser(id) {
+        const user = await User.findByPk(id);
+        return user;
+    },
+
+    /* Actualizar datos de un usuario dado el idUser */
+    async updateUser(id, username, password, role) {
+        User.find({ where: { idUser: id } })
+        .on('success', function (user) {
+          // Asegurarse de que el usuario existe en la BD
+          if (user) {
+            user.update({
+              NameUser: username,
+              PasswordUser: password,
+              RoleUser: role
+            })
+            .success(function () {})
+          }
+        })
+    },
+
+    /* Método que elimina un usuario dado el idUser */
+    async deleteUser(id) {
+        await User.destroy({ where: { idUser: id } });
+    }
+
 };
-
-
-// module.exports = {
-
-//  create(req, res) {
-//     return User
-//         .create ({
-//              NameUser: req.params.NameUser,
-//              PasswordUser: req.params.PasswordUser,
-//              RoleUser: req.params.RoleUser
-//         })
-//         .then(usuario => res.status(200).send(User))
-//         .catch(error => res.status(400).send(error))
-//  },
-
-//  list(_, res) {
-//      return User.findAll({})
-//         .then(usuario => res.status(200).send(User))
-//         .catch(error => res.status(400).send(error))
-//  },
-
-//  find (req, res) {
-//      return User.findAll({
-//          where: {
-//              username: req.params.username,
-//          }
-//      })
-//      .then(User => res.status(200).send(User))
-//      .catch(error => res.status(400).send(error))
-//   },
-// };

@@ -5,9 +5,8 @@ const session = require('express-session');
 const PassportLocal = require('passport-local').Strategy;
 const path = require('path');
 const app = express();
-
 const userController = require('../../controllers/userController');
-
+const User = require('../../models/ps_user');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser('mi ultra hiper secreto'));
@@ -20,28 +19,30 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.set('view engine', 'ejs');
 
-// LOGIN
+/* Autentica si el usuario ingresado en el login en válido */
 passport.use(new PassportLocal(async function(username, password, done){
     response = await userController.findUser(username, password);
-    if(response == true) {
-        // console.log(response, 'asdfasdfasdf', 1232);
-        return done(null,{ id: 1, name: "Cody" });
+    console.log(response, 'epaaaa');
+    if(response != null) {
+        
+        return done(null,{ id: response.idUser, name: response.NameUser });
     }else{
         done(null, false);
     }
 }));
 
-// { id: 1, name: "Cody" }
-// 1 => Serialización
+/* Serialización del usuario autenticado */
 passport.serializeUser(function(user,done){
     done(null,user.id);
 });
 
-// Deserialización
+/* Deserialización del usuario autenticado */
 passport.deserializeUser(function(id,done){
-    done(null, {id: 1, name: "Cody" });
+    user = User.findByPk(id);
+    done(null, {id: user.idUser, name: user.NameUser });
 });
 
+/* Redireccionamiento desde "/" */
 app.get("/",(req,res,next)=>{
     // Si no hemos iniciado sesión redireccionar a /login
     if(req.isAuthenticated()) return next();
@@ -51,16 +52,24 @@ app.get("/",(req,res,next)=>{
     res.render("pages/index");
 });
 
+/* Redireccionamiento al login */
 app.get("/login",(req,res)=>{
     res.render("pages/login/login");
 });
 
+/* Redireccionamiento desde el formulario del login */
 app.post("/login", passport.authenticate('local', {
     successRedirect: "/",
     failureRedirect: "/login"
 }));
 
+/* Redireccionamiento a recuperar la contraseña */
 app.get("/recover",(req,res)=>{
+    res.render("pages/login/recover");
+});
+
+app.get("/test",(req,res)=>{
+    userController.updateUser(1, 'momo', 'momo123', 1);
     res.render("pages/login/recover");
 });
 
