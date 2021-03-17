@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize'); 
 const db = require('../server/connection');
 
-// Schema de la tabla ps_user
+// Schema de la tabla ps_unitedmeasured
 const UnitedMeasured = db.define('ps_unitedmeasured', {
     idUnitedMeasured: {
         type: Sequelize.INTEGER, 
