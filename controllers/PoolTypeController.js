@@ -1,9 +1,14 @@
 const Sequelize = require('sequelize');
 const PT = require('../models/ps_PoolType');
 const server = require('../server/server');
+const {check, validationResult} = require('express-validator');
+
+var validator = [
+    check('idTypePool','xxx').not().notEmpty(),
+    check('NameTypePool','yyy').not().notEmpty(),
+];
 
 module.exports = {
-    
     async findPoolTypeOne(id) {
         const PoolType = await PT.findByPk(id);
         return PoolType;
@@ -15,6 +20,11 @@ module.exports = {
     },
 
     async CretePoolType(NewPooltype) {
+          console.log('Entreo a 1');
+          const err = validationResult(NewPooltype);
+          if (!err.isEmpty() ){
+              return {err : err.array()};
+          }
           const PoolType = await PT.create(NewPooltype);
           return PoolType;
     },
@@ -28,5 +38,6 @@ module.exports = {
         const PoolType = await PT.destroy({where : { idTypePool : id}});
         return PoolType;
     },
+
 
 };
