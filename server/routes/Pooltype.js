@@ -14,8 +14,7 @@ routes.get('/PoolType/', async (req, res) => {
 });
 
 routes.post('/Pooltype/', async (req, res) => {
-    console.log('antes de entrar');
-    pt = await PoolTypeController.CretePoolType(req.body);
+    pt = await PoolTypeController.CreatePoolType(req.body);
     res.json(pt); 
 });
 
