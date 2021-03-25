@@ -50,7 +50,7 @@ module.exports = {
     },
 
     async CreatePoolType(NewPooltype) {
-          const err = (await this.validePool(NewPooltype,0,1));
+          const err = await this.validePool(NewPooltype,0,1);
           if (err) {
               return err;
           }
@@ -59,8 +59,8 @@ module.exports = {
     },
 
     async UpdatePoolType(body, id) {
-        const err = this.validePool(body,id,2);
-        if (!err) {
+        const err = await this.validePool(body,id,2);
+        if (err) {
             return err;
         }
         const PoolType = await PT.update(body , {where : { idTypePool : id}});
@@ -68,13 +68,12 @@ module.exports = {
     },
 
     async DeletePoolType(id) {
-        const err = this.validePool({},id,3);
-        if (!err) {
+        const err = await this.validePool({},id,3);
+        if (err) {
             return err;
         }
       const PoolType = await PT.destroy({where : { idTypePool : id}});
         return PoolType;
     },
-
 
 };  
