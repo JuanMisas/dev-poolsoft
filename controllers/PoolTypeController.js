@@ -9,30 +9,30 @@ const { INTEGER } = require('sequelize');
 module.exports = {
 
     async validePool(NP, id, tipo){
-        if (tipo == 1){
-            if ((NP.idTypePool == '' || NP.idTypePool == undefined) && tipo == 1){
-                return 'El ID no puede ser nulo';
-            }
-            var x1 = await PT.count({where : {'idTypePool' : NP.idTypePool}});
-            if (x1 > 0) 
-                return 'El ID ya existe';
-
-            if (NP.NameTypePool == '' || NP.NameTypePool == undefined) {
-                return 'El Nombre no puede ser nulo';
-            }
-        }
-        //
+        var errores = [];
         if (tipo > 1) {
             var x1 = await PT.count({where : {'idTypePool' : id}});
             if (x1 == 0) 
-                return 'El ID No existe';
+                errores.push('El ID No existe');
         }
-        if (tipo == 2){
-            if (NP.NameTypePool == '' || NP.NameTypePool == undefined) {
-                return 'El Nombre no puede ser nulo';
+        if (tipo == 1 || tipo == 2){
+            if (tipo == 1) {
+                var x1 = await PT.count({where : {'idTypePool' : NP.idTypePool}});
+                if (x1 > 0) 
+                    errores.push('El ID ya existe');
+            }    
+            if ((NP.idTypePool == '' || NP.idTypePool == undefined) ){
+                errores.push('El ID no puede ser nulo');
             }
-        }       
-        return false;
+            if (NP.NameTypePool == '' || NP.NameTypePool == undefined) {
+                errores.push('El Nombre no puede ser nulo');
+            }
+        }
+        const len = errores.length;
+        if (len > 0 )
+            return errores;
+        else
+            return false;
     },
 
     async findPoolTypeOne(id) {
