@@ -8,32 +8,39 @@ const { INTEGER } = require('sequelize');
 
 module.exports = {
 
-    async validePool(NP, tipo){
-        console.log(NP);
-        if ((NP.idTypePool == '' || NP.idTypePool == undefined) && tipo == 1){
-            return 'El ID no puede ser nulo';
-        }
-        if (NP.idTypePool !='' ){
-            var x1 = await PT.count({where : {idTypePool : NP.idTypePool}});
-            console.log('x1',x1,tipo);
-            if (x1 > 0) {
-                console.log ('entreo a 1');
-                if (tipo == 1) {
-                    console.log ('entro a 2');
-                return 'El Id ya existe';
-                }
+    async validePool(NP, id, tipo){
+        if (tipo == 1){
+            if ((NP.idTypePool == '' || NP.idTypePool == undefined) && tipo == 1){
+                return 'El ID no puede ser nulo';
             }
-            else if (tipo > 1 ) 
-                return 'El ID no existe';      
+            var x1 = await PT.count({where : {'idTypePool' : NP.idTypePool}});
+            if (x1 > 0) 
+                return 'El ID ya existe';
+
+            if (NP.NameTypePool == '' || NP.NameTypePool == undefined) {
+                return 'El Nombre no puede ser nulo';
+            }
         }
-        if ((NP.NameTypePool == '' || NP.NameTypePool == undefined) && (tipo == 1 || tipo == 2)){
-            return 'El Nombre no puede ser nulo';
+        //
+        if (tipo > 1) {
+            var x1 = await PT.count({where : {'idTypePool' : id}});
+            if (x1 == 0) 
+                return 'El ID No existe';
         }
-        return 'salio bien';
+        if (tipo == 2){
+            if (NP.NameTypePool == '' || NP.NameTypePool == undefined) {
+                return 'El Nombre no puede ser nulo';
+            }
+        }       
+        return false;
     },
 
     async findPoolTypeOne(id) {
-        const PoolType = await PT.findByPk(id);
+        const err = (await this.validePool({},id,5));
+        if (err) {
+            return err;
+        }
+      const PoolType = await PT.findByPk(id);
         return PoolType;
     },
 
@@ -43,8 +50,8 @@ module.exports = {
     },
 
     async CreatePoolType(NewPooltype) {
-          const err = this.validePool(NewPooltype,1);
-          if (err == 'salio bien') {
+          const err = (await this.validePool(NewPooltype,0,1));
+          if (err) {
               return err;
           }
           const PoolType = await PT.create(NewPooltype);
@@ -52,8 +59,8 @@ module.exports = {
     },
 
     async UpdatePoolType(body, id) {
-        const err = this.validePool(body,2);
-        if (err != '') {
+        const err = this.validePool(body,id,2);
+        if (!err) {
             return err;
         }
         const PoolType = await PT.update(body , {where : { idTypePool : id}});
@@ -61,8 +68,8 @@ module.exports = {
     },
 
     async DeletePoolType(id) {
-        const err = this.validePool(id,3);
-        if (err != '') {
+        const err = this.validePool({},id,3);
+        if (!err) {
             return err;
         }
       const PoolType = await PT.destroy({where : { idTypePool : id}});
@@ -70,4 +77,4 @@ module.exports = {
     },
 
 
-};
+};  
