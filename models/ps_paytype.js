@@ -2,7 +2,7 @@
 const Sequelize = require('sequelize'); 
 const db = require('../server/connection');
 
-const PayType = db.define('ps_filtertype', {
+const PayType = db.define('ps_paytype', {
     idPayType: {
         type: Sequelize.INTEGER, 
         primaryKey: true, 

@@ -14,7 +14,7 @@ module.exports = {
             var x1 = await PAY.count({where : {'idPayType' : id}});
             if (x1 == 0) 
                 errores.push('El ID No existe');
-        }
+        } 
         if (tipo == 1 || tipo == 2){
             if (tipo == 1) {
                 var x1 = await PAY.count({where : {'idPayType' : NP.idPayType}});
@@ -27,6 +27,9 @@ module.exports = {
             if (NP.NamePayType == '' || NP.NamePayType == undefined) {
                 errores.push('El Nombre no puede ser nulo');
             }
+        }
+        if (NP.PeriodicityPayType < 0 && (tipo == 1 || tipo == 2) ){
+            errores.push('La periodicidad de pago no debe ser menor de cero')
         }
         const len = errores.length;
         if (len > 0 )
