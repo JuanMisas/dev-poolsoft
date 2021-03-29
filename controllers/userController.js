@@ -22,6 +22,13 @@ module.exports = {
         return user;
     },
 
+    /* Método que encuentra a todos los registros de User. */ 
+    /* Devuelve un array de objetos json de tipo User. */
+    async findAllUser() {
+        const user = await User.findAll({where : {}});
+        return user;
+    },
+
     /* Actualizar datos de un usuario dado el idUser */
     async updateUser(id, username, password, role) {
         user = await User.findByPk(id);

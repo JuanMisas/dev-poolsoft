@@ -21,6 +21,13 @@ module.exports = {
         const idClientType = await IdClientType.findByPk(id);
         return idClientType;
     },
+    
+    /* Método que encuentra a todos los registros de ClientTypeById. */ 
+    /* Devuelve un array de objetos json de tipo ClientTypeById. */
+    async findAllClientTypeById() {
+        const clientTypeById = await clientTypeById.findAll({where : {}});
+        return clientTypeById;
+    },
 
     /* Actualizar datos de un tipo de cliente dado el IdIdClientType y nameIdClientType */
     async updateIdClientType(id, nameIdClientType) {

@@ -22,6 +22,13 @@ module.exports = {
         return supply;
     },
 
+    /* Método que encuentra a todos los registros de Supply. */ 
+    /* Devuelve un array de objetos json de tipo Supply. */
+    async findAllSupply() {
+        const supply = await Supply.findAll({where : {}});
+        return supply;
+    },
+
     /* Actualizar datos de un insumo dado el idSupply */
     async updateSupply(id, nameSupply, idUnitedMeasuredSupply, descriptionSupply) {
         supply = await Supplies.findByPk(id);

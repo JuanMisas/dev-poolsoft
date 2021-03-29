@@ -22,6 +22,13 @@ module.exports = {
         return unitedMeasured;
     },
 
+    /* Método que encuentra a todos los registros de UnitedMeasured. */ 
+    /* Devuelve un array de objetos json de tipo Role. */
+    async findAllUnitedMeasured() {
+        const unitedMeasured = await UnitedMeasured.findAll({where : {}});
+        return unitedMeasured;
+    },
+
     /* Actualizar datos de una unidad de medida dado el idUnitedMeasured y nameUnitedMeasured */
     async updateUnitedMeasured(id, nameUnitedMeasured) {
         unitedMeasured = await UnitedMeasured.findByPk(id);

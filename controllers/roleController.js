@@ -22,6 +22,13 @@ module.exports = {
         return role;
     },
 
+    /* Método que encuentra a todos los registros de Role. */ 
+    /* Devuelve un array de objetos json de tipo Role. */
+    async findAllRole() {
+        const role = await Role.findAll({where : {}});
+        return role;
+    },
+
     /* Actualizar datos de un rol dado el idRole */
     async updateRole(id, roleName) {
         role = await Role.findByPk(id);

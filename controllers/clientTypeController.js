@@ -2,7 +2,15 @@ const Sequelize = require('sequelize');
 const ClientType = require('../models/ps_clienttype');
 const server = require('../server/server');
 
+// const app = require('express')
+// app.use(express.json());
+// const bodyParser = require('body-parser');
+// const { check, validationResult } = require('express-validator');
+// const urlEncodedParser = bodyParser.urlencoded({ extended: false })
+
+
 module.exports = {
+    
     /* Método que crea un tipo de cliente dado el nameClientType */
     async createClientType(nameClientType) {
         await ClientType.create({ NameClientType: nameClientType });
@@ -19,6 +27,13 @@ module.exports = {
     /* Devuelve un objeto json de tipo ClientType. */
     async findClientTypeById(id) {
         const clientType = await ClientType.findByPk(id);
+        return clientType;
+    },
+
+    /* Método que encuentra a todos los registros de ClientType. */ 
+    /* Devuelve un arrray de objetos json de tipo ClientType. */
+    async findAllClientType() {
+        const clientType = await ClientType.findAll({where : {}});
         return clientType;
     },
 
