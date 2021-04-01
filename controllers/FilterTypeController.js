@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize');
 const FT = require('../models/ps_FilterType');
 const server = require('../server/server');
-const {check, validationResult} = require('express-validator');
 const { validate } = require('../server/connection');
 const { INTEGER } = require('sequelize');
 

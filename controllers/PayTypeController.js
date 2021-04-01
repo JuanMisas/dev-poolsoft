@@ -1,7 +1,6 @@
 const Sequelize = require('sequelize');
 const PAY = require('../models/ps_PayType');
 const server = require('../server/server');
-const {check, validationResult} = require('express-validator');
 const { validate } = require('../server/connection');
 const { INTEGER } = require('sequelize');
 
@@ -27,6 +26,9 @@ module.exports = {
             if (NP.NamePayType == '' || NP.NamePayType == undefined) {
                 errores.push('El Nombre no puede ser nulo');
             }
+        }
+        if ((NP.PeriodicityPayType == '' || NP.PeriodicityPayType == undefined) && (tipo == 1 || tipo == 2) ){
+            errores.push('La periodicidad debe tener un valor')
         }
         if (NP.PeriodicityPayType < 0 && (tipo == 1 || tipo == 2) ){
             errores.push('La periodicidad de pago no debe ser menor de cero')
