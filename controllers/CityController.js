@@ -3,7 +3,7 @@ const CITY = require('../models/ps_city');
 const server = require('../server/server');
 const { validate } = require('../server/connection');
 const { INTEGER } = require('sequelize');
-const State = require('../controllers/StateController.js')
+const State = require('./stateController.js')
 
 
 module.exports = {

@@ -1,7 +1,7 @@
 const routes = require('express').Router();
 
 const State = require('../../models/ps_state');
-const StateController = require('../../controllers/StateController');
+const StateController = require('../../controllers/stateController');
 
 routes.get('/State/:id', async (req, res) => {
     st = await StateController.findStateOne(req.params.id) ;

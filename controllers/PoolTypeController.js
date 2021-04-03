@@ -40,7 +40,7 @@ module.exports = {
         if (err) {
             return err;
         }
-      const PoolType = await PT.findByPk(id);
+        const PoolType = await PT.findByPk(id);
         return PoolType;
     },
 

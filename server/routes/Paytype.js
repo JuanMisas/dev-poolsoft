@@ -1,7 +1,7 @@
 const routes = require('express').Router();
 
 const PayType = require('../../models/ps_paytype');
-const PayTypeController = require('../../controllers/PayTypeController');
+const PayTypeController = require('../../controllers/payTypeController');
 
 routes.get('/PayType/:id', async (req, res) => {
     pt = await PayTypeController.findPayTypeOne(req.params.id) ;

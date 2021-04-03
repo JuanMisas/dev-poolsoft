@@ -1,7 +1,7 @@
 const routes = require('express').Router();
 
 const Contry = require('../../models/ps_country');
-const CountryController = require('../../controllers/CountryController');
+const CountryController = require('../../controllers/countryController');
 
 routes.get('/Country/:id', async (req, res) => {
     co = await CountryController.findCountryOne(req.params.id) ;
