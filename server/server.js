@@ -16,14 +16,10 @@ var routesClientType = require('./routes/clientType.js')
 var routesPoolType = require('./routes/pooltype.js')
 var routesFilterType = require('./routes/filtertype.js')
 var routesPayType = require('./routes/paytype.js')
-var routesCountry = require('./routes/Country.js')
-var routesState = require('./routes/State.js')
-<<<<<<< Updated upstream
-var routesCity = require('./routes/City')
-=======
-var routesCity = require('./routes/City.js')
-var routesMoneyType = require('./routes/Moneytype.js');
->>>>>>> Stashed changes
+var routesCountry = require('./routes/country.js')
+var routesState = require('./routes/state.js')
+var routesCity = require('./routes/city.js')
+var routesMoneyType = require('./routes/moneyType.js');
 
 var mySqlConnection = require('./connection.js')
 
@@ -46,10 +42,7 @@ express()
   .use(routesCountry)
   .use(routesState)
   .use(routesCity)
-<<<<<<< Updated upstream
-=======
   .use(routesMoneyType)
->>>>>>> Stashed changes
   .use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')

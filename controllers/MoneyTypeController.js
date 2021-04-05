@@ -64,9 +64,6 @@ module.exports = {
         if (err) {
             return err;
         }
-        console.log(body);
-        console.log(id);
-        console.log(typeof(body.idTypeMoney))
         if (body.idTypeMoney == '') {
             body.idTypeMoney = id;
         }
