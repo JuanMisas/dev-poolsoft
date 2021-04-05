@@ -70,7 +70,7 @@ module.exports = {
             return err;
         }
         if (body.IdCity == ''){
-            body.city = id;
+            body.IdCity = id;
         }
         const City = await CITY.update(body , {where : { IdCity : id}});
         return City;
