@@ -20,7 +20,7 @@ module.exports = {
                 if (x1 > 0) 
                     errores.push('El ID ya existe');
             }    
-            if ((NP.idPayType == '' || NP.idPayType == undefined) ){
+            if (NP.idPayType == undefined ){
                 errores.push('El ID no puede ser nulo');
             }
             if (NP.NamePayType == '' || NP.NamePayType == undefined) {
@@ -67,6 +67,9 @@ module.exports = {
         const err = await this.validePay(body,id,2);
         if (err) {
             return err;
+        }
+        if (body.idPayType == ''){
+            body.idPayType = id;
         }
         const PayType = await PAY.update(body , {where : { idPayType : id}});
         return PayType;

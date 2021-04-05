@@ -20,7 +20,7 @@ module.exports = {
                 if (x1 > 0) 
                     errores.push('El ID ya existe');
             }    
-            if ((NF.idFilterType == '' || NF.idFilterType == undefined) ){
+            if (NF.idFilterType == undefined ){
                 errores.push('El ID no puede ser nulo');
             }
             if (NF.NameFilterType == '' || NF.NameFilterType == undefined) {
@@ -61,6 +61,9 @@ module.exports = {
         const err = await this.valideFilter(body,id,2);
         if (err) {
             return err;
+        }
+        if (body.idFilterType == ''){
+            body.idFilterType = id;
         }
         const FilterType = await FT.update(body , {where : { idFilterType : id}});
         return FilterType;

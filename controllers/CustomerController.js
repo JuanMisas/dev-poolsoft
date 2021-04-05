@@ -3,12 +3,20 @@ const CUSTOMER = require('../models/ps_Customer');
 const server = require('../server/server');
 const { validate } = require('../server/connection');
 const { INTEGER } = require('sequelize');
-const Pago = require('../controllers/PayTypeController');
+const PAGO = require('../controllers/PayTypeController');
+const TypeIdNumber = require('../controllers/idClientTypeController');
+const TypeCustomer = require('../controllers/clientTypeController');
+const Country = require('../controllers/CountryController');
+const State = require('../controllers/StateController');
+const City = require('../controllers/CityController');
+const Money = require('../controllers/MoneyTypeController');
+
 
 module.exports = {
 
     async valideCustomer(CUS, id, tipo){
         var errores = [];
+        var len1 = 0;
         if (tipo > 1) {
             var x1 = await CUSTOMER.count({where : {'idCustomer' : id}});
             if (x1 == 0) 
@@ -20,7 +28,7 @@ module.exports = {
                 if (x1 > 0) 
                     errores.push('El ID ya existe');
             }    
-            if ((CUS.idCustomer == '' || CUS.idCustomer == undefined) ){
+            if (CUS.idCustomer == undefined ){
                 errores.push('El ID no puede ser nulo');
             }
             if (CUS.NameCustomer == '' || CUS.NameCustomer == undefined) {
@@ -36,7 +44,8 @@ module.exports = {
         else {
             // Validar que el tipo de pago si exista
             const pay = PAGO.findByPk(CUS.TypePayCustomers);
-            if (!pay) {
+            len1 = pay.length;
+            if (len1 > 0) {
                 errores.push('El tipo de pago no existe')
             }
         }
@@ -44,25 +53,39 @@ module.exports = {
         if ((CUS.IdNumberCustomers == '' || CUS.IdNumberCustomers == undefined) && (tipo == 1 || tipo == 2) ){
             errores.push('El numero de identificacion del cliente no debe ser nula')
         }
-        // Se debe validar que el numero de identificacion no exista (no se a duplicada)
         
         if ((CUS.IdClientTypeCustomers == '' || CUS.IdClientTypeCustomers == undefined) && (tipo == 1 || tipo == 2) ){
             errores.push('El tipo de identificacion no debe ser nula')
         }
+        else {
         // Validar que el tipo de identificacion exista.
+            const TIC = TypeIdNumber.findByPk(CUS.IdNumberCustomers)
+            len1 = TIC.length;
+            if (len1 > 0){
+                errores.push('El tipo de Identificacion del cliente no existe')
+            }
+        }
 
         if ((CUS.StatusCustomers == '' || CUS.StatusCustomers == undefined) && (tipo == 1 || tipo == 2) ){
             errores.push('El status del cliente no puede ser nulo')
         }
+        else {
         // Validar que estatus 1= Activo 2=inactivo 3=Inactivo en mora, 4=inactivo temporalmente
         if ((CUS.StatusCustomers < 0 || CUS.StatusCustomers > 5) && (tipo == 1 || tipo == 2) ){
             errores.push('El status debe ser Activo, inactivo, Inactivo en mora o inactivo temporalmente')
-        }
+            }
+        }   
 
         if ((CUS.ClientTypecustomers == '' || CUS.ClientTypecustomers == undefined) && (tipo == 1 || tipo == 2) ){
             errores.push('El tipo de cliente no puede ser nulo')
-        }
+        }else {
         //Validar que el tipo de cliente exista
+        const TC = TypeCustomer.findByPk(CUS.ClientTypecustomers)
+        len1 = TC.length;
+        if (len1 > 0 ){
+            errores.push('El tipo de cliente no existe')
+            }
+        }
 
         if ((CUS.AddressBillCustomers == '' || CUS.AddressBillCustomers == undefined) && (tipo == 1 || tipo == 2) ){
             errores.push('La direccion no debe ser nula')
@@ -70,22 +93,41 @@ module.exports = {
 
         if ((CUS.CountryBillCustomers == '' || CUS.CountryBillCustomers == undefined) && (tipo == 1 || tipo == 2) ){
             errores.push('La direccion no debe ser nula')
-        }
+        }else {
         // Validad la que el pais existe
+            const CO = Country.findByPk(CUS.CountryBillCustomers);
+            len1 = CO.length;
+            if (len1 > 0 ){
+                push.errores('El pais no existe')
+            }
+        }
 
         if ((CUS.EstateBillcustomers == '' || CUS.EstateBillcustomers == undefined) && (tipo == 1 || tipo == 2) ){
             errores.push('La direccion no debe ser nula')
-        }
+        }else {
         // valida que el estado exista
+            const ST = State.findByPk(CUS.EstateBillcustomers)
+            len1 = ST.length;
+            if (len1 > 0 ){
+                push.errores('El pais no existe')
+            }
+        }
 
         if ((CUS.CityBillCustomers == '' || CUS.CityBillCustomers == undefined) && (tipo == 1 || tipo == 2) ){
             errores.push('La direccion no debe ser nula')
-        }
+        }else {
         // Valida que la ciudad exista
+        const CT = City.findByPk(CUS.CityBillCustomers)
+        len1 = CT.length;
+        if (len1 > 0 ) {
+            push.errores('La cuidad no existe')
+            }
+        }
 
         if ((CUS.FeeCustomers == '' || CUS.FeeCustomers == undefined) && (tipo == 1 || tipo == 2) ){
             errores.push('La cuota que debe pagar el cliente no debe ser nula')
         }
+
         if ((CUS.FeeCustomers < 0) && (tipo == 1 || tipo == 2) ){
             errores.push('La cuota que debe pagar el cliente no debe ser menor que cero')
         }

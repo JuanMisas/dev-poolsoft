@@ -11,6 +11,7 @@ module.exports = {
     async validestate(NST, id, tipo){
         var errores = [];
         var len = 0;
+
         if (tipo > 1) {
             var x1 = await STATE.count({where : {'IdState' : id}});
             if (x1 == 0) 
@@ -22,7 +23,7 @@ module.exports = {
                 if (x1 > 0) 
                     errores.push('El ID ya existe');
             }    
-            if ((NST.IdState == '' || NST.IdState == undefined) ){
+            if (NST.IdState == undefined){
                 errores.push('El ID no puede ser nulo');
             }
             if (NST.NameState == '' || NST.NameState == undefined) {
@@ -68,6 +69,9 @@ module.exports = {
         const err = await this.validestate(body,id,2);
         if (err) {
             return err;
+        }
+        if (body.IdState == '') {
+            body.IdState = id;
         }
         const State = await STATE.update(body , {where : { IdState : id}});
         return State;

@@ -21,7 +21,7 @@ module.exports = {
                 if (x1 > 0) 
                     errores.push('El ID ya existe');
             }    
-            if ((NP.idTypePool == '' || NP.idTypePool == undefined) ){
+            if (NP.idTypePool == undefined ){
                 errores.push('El ID no puede ser nulo');
             }
             if (NP.NameTypePool == '' || NP.NameTypePool == undefined) {
@@ -62,6 +62,9 @@ module.exports = {
         const err = await this.validePool(body,id,2);
         if (err) {
             return err;
+        }
+        if (body.idTypePool == ''){
+            body.idTypePool = id;
         }
         const PoolType = await PT.update(body , {where : { idTypePool : id}});
         return PoolType;

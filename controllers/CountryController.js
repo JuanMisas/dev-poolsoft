@@ -20,7 +20,7 @@ module.exports = {
                 if (x1 > 0) 
                     errores.push('El ID ya existe');
             }    
-            if ((NCO.IdCountry == '' || NCO.IdCountry == undefined) ){
+            if ( NCO.IdCountry == undefined ){
                 errores.push('El ID no puede ser nulo');
             }
             if (NCO.NameCountry == '' || NCO.NameCountry == undefined) {
@@ -61,6 +61,9 @@ module.exports = {
         const err = await this.valideCountry(body,id,2);
         if (err) {
             return err;
+        }
+        if (body.IdCountry == ''){
+            body.IdCountry = id;
         }
         const Country = await COUNTRY.update(body , {where : { IdCountry : id}});
         return Country;

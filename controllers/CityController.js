@@ -22,7 +22,7 @@ module.exports = {
                 if (x1 > 0) 
                     errores.push('El ID ya existe');
             }    
-            if ((NCT.IdCity == '' || NCT.IdCity == undefined) ){
+            if (NCT.IdCity == undefined){
                 errores.push('El ID no puede ser nulo');
             }
             if (NCT.NameCity == '' || NCT.NameCity == undefined) {
@@ -68,6 +68,9 @@ module.exports = {
         const err = await this.validecity(body,id,2);
         if (err) {
             return err;
+        }
+        if (body.IdCity == ''){
+            body.city = id;
         }
         const City = await CITY.update(body , {where : { IdCity : id}});
         return City;
