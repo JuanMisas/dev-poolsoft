@@ -74,8 +74,8 @@ module.exports = {
     /* Método que encuentra a todos los registros de ClientTypeById. */ 
     /* Devuelve un array de objetos json de tipo ClientTypeById. */
     async findAllClientTypeById() {
-        const clientTypeById = await clientTypeById.findAll({where : {}});
-        return clientTypeById;
+        const idClientType = await idClientType.findAll({where : {}});
+        return idClientType;
     },
 
     /* Actualizar datos de un tipo de cliente dado el IdIdClientType y nameIdClientType */
@@ -103,9 +103,9 @@ module.exports = {
 
     /* Método que encuentra a un tipo de cliente por el nameIdClientType. */ 
     /* Devuelve un objeto json de tipo IdClientType. */
-    async findIdClientType(nameIdClientType) {
-        const idClientType = await IdClientType.findOne({ where: { NameIdClientType: nameIdClientType } });
-        return idClientType;
-    }
+//    async findIdClientType(nameIdClientType) {
+//        const idClientType = await IdClientType.findOne({ where: { NameIdClientType: nameIdClientType } });
+//        return idClientType;
+//    }
 
 };
