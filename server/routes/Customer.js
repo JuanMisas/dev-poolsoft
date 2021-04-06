@@ -4,12 +4,15 @@ const Customer = require('../../models/ps_customer');
 const CustomerController = require('../../controllers/CustomerController');
 
 routes.get('/Customer/:typeid/:id', async (req, res) => {
-    if (req.params.typeid == 'id')
-        cus = await CustomerController.findCustomerOnebyId(req.params.id);
-    else
-        cus = await CustomerController.findCustomerOnebyNumber(req.params.id);
+    cus = await CustomerController.findCustomerOnebyNumber(req.params.id);
     res.json(cus);
 });
+
+routes.get('/Customer/:id', async (req, res) => {
+    cus = await CustomerController.findCustomerOneById(req.params.id);
+    res.json(cus);
+});
+
 
 routes.get('/Customer/', async (req, res) => {
     cus = await CustomerController.findAllCustomer();
@@ -27,7 +30,7 @@ routes.put('/Customer/:id', async (req, res) => {
 });
 
 routes.delete('/Customer/:id', async (req, res) => {
-    cus = await CustomerController.DeletePayType(req.params.id);
+    cus = await CustomerController.DeleteCustomer(req.params.id);
     res.json(cus); 
 });
 
