@@ -21,6 +21,7 @@ var routesState = require('./routes/state.js')
 var routesCity = require('./routes/city.js')
 var routesMoneyType = require('./routes/moneyType.js');
 var routesCustomer = require('./routes/Customer.js');
+var routesCustomerPool = require('./routes/PoolCustomer.js')
 
 var mySqlConnection = require('./connection.js')
 
@@ -45,6 +46,7 @@ express()
   .use(routesCity)
   .use(routesMoneyType)
   .use(routesCustomer)
+  .use(routesCustomerPool)
   .use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')

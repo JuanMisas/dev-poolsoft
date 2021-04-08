@@ -103,9 +103,9 @@ module.exports = {
 
     /* Método que encuentra a un tipo de cliente por el nameIdClientType. */ 
     /* Devuelve un objeto json de tipo IdClientType. */
-//    async findIdClientType(nameIdClientType) {
-//        const idClientType = await IdClientType.findOne({ where: { NameIdClientType: nameIdClientType } });
-//        return idClientType;
-//    }
+    async findIdClientType(nameIdClientType) {
+        const idClientType = await IdClientType.findOne({ where: { NameIdClientType: nameIdClientType } });
+        return idClientType;
+    }
 
 };
