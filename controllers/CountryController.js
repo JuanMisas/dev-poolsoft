@@ -16,11 +16,13 @@ module.exports = {
         } 
         if (tipo == 1 || tipo == 2){
             if (tipo == 1) {
-                var x1 = await COUNTRY.count({where : {'IdCountry' : NCO.IdCountry}});
-                if (x1 > 0) 
-                    errores.push('El ID ya existe');
+                if (NCO.IdCountry != undefined) {
+                    var x1 = await COUNTRY.count({where : {'IdCountry' : NCO.IdCountry}});
+                    if (x1 > 0) 
+                        errores.push('El ID ya existe');
+                }
             }    
-            if ( NCO.IdCountry == undefined ){
+            if ( NCO.IdCountry == undefined && tipo != 1){
                 errores.push('El ID no puede ser nulo');
             }
             if (NCO.NameCountry == '' || NCO.NameCountry == undefined) {

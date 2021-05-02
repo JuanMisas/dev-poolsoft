@@ -9,9 +9,7 @@ module.exports = {
         var errores = [];
         isRole = false;
         if (tipo == 1) {
-            if (body.idUser == '' || body.idUser == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
+            if (body.idUser =! undefined) {
                 var x1 = await User.count({where : {'idUser' : body.idUser}});
                 if (x1 > 0) 
                     errores.push('El ID ya existe');

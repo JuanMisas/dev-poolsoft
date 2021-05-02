@@ -17,11 +17,13 @@ module.exports = {
         }
         if (tipo == 1 || tipo == 2){
             if (tipo == 1) {
-                var x1 = await PT.count({where : {'idTypePool' : NP.idTypePool}});
-                if (x1 > 0) 
-                    errores.push('El ID ya existe');
+                if (NP.idTypePool != undefined) {
+                    var x1 = await PT.count({where : {'idTypePool' : NP.idTypePool}});
+                    if (x1 > 0) 
+                        errores.push('El ID ya existe');
+                }
             }    
-            if (NP.idTypePool == undefined ){
+            if (NP.idTypePool == undefined && tipo != 1){
                 errores.push('El ID no puede ser nulo');
             }
             if (NP.NameTypePool == '' || NP.NameTypePool == undefined) {

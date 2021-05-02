@@ -31,11 +31,13 @@ module.exports = {
         } 
         if (tipo == 1 || tipo == 2){
             if (tipo == 1) {
-                var x1 = await CUSTOMER.count({where : {'idCustomer' : CUS.idCustomer}});
-                if (x1 > 0) 
-                    errores.push('El ID ya existe');
+                if (CUS.idCustomer != undefined) {
+                    var x1 = await CUSTOMER.count({where : {'idCustomer' : CUS.idCustomer}});
+                    if (x1 > 0) 
+                        errores.push('El ID ya existe');
+                }
             }    
-            if (CUS.idCustomer == undefined ){
+            if (CUS.idCustomer == undefined && tipo != 1){
                 errores.push('El ID no puede ser nulo');
             }
             if (CUS.NameCustomer == '' || CUS.NameCustomer == undefined) {

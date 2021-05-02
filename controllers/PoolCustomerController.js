@@ -20,11 +20,13 @@ module.exports = {
         }
         if (tipo == 1 || tipo == 2){
             if (tipo == 1) {
-                var x1 = await CT.count({where : {'idPoolsCustomers' : NP.idPoolsCustomers}});
-                if (x1 > 0) 
-                    errores.push('El ID ya existe');
+                if ( NP.idPoolsCustomers != undefined) {
+                    var x1 = await CT.count({where : {'idPoolsCustomers' : NP.idPoolsCustomers}});
+                    if (x1 > 0) 
+                        errores.push('El ID ya existe');
+                }
             }    
-            if (NP.idPoolsCustomers == undefined ){
+            if (NP.idPoolsCustomers == undefined && tipo != 1){
                 errores.push('El ID no puede ser nulo');
             }
             // Valide Que el cliente existe 

@@ -7,9 +7,7 @@ module.exports = {
     async validateUnitedMeasured(body, id, tipo){
         var errores = [];
         if (tipo == 1) {
-            if (body.idUnitedMeasured == '' || body.idUnitedMeasured == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
+            if (body.idUnitedMeasured =! undefined) {
                 var x1 = await UnitedMeasured.count({where : {'idUnitedMeasured' : body.idUnitedMeasured}});
                 if (x1 > 0) 
                     errores.push('El ID ya existe');

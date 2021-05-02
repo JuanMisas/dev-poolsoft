@@ -9,9 +9,7 @@ module.exports = {
         var errores = [];
         isUnitedMeasured = false;
         if (tipo == 1) {
-            if (body.idSupplies == '' || body.idSupplies == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
+            if (body.idSupplies != undefined) {
                 var x1 = await Supplies.count({where : {'idSupplies' : body.idSupplies}});
                 if (x1 > 0) 
                     errores.push('El ID ya existe');

@@ -7,9 +7,7 @@ module.exports = {
     async validateRole(body, id, tipo){
         var errores = [];
         if (tipo == 1) {
-            if (body.idRole == '' || body.idRole == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
+            if (body.idRole =! undefined) {
                 var x1 = await Role.count({where : {'idRole' : body.idRole}});
                 if (x1 > 0) 
                     errores.push('El ID ya existe');

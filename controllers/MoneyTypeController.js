@@ -18,11 +18,13 @@ module.exports = {
         }
         if (tipo == 1 || tipo == 2){
             if (tipo == 1) {
-                var x1 = await MT.count({where : {'idTypeMoney' : NM.idTypeMoney}});
-                if (x1 > 0) 
-                    errores.push('El ID ya existe');
+                if (NM.idTypeMoney != undefined){
+                    var x1 = await MT.count({where : {'idTypeMoney' : NM.idTypeMoney}});
+                    if (x1 > 0) 
+                        errores.push('El ID ya existe');
+                }
             }    
-            if (NM.idTypeMoney == undefined ){
+            if (NM.idTypeMoney == undefined && Tipo != 1){
                 errores.push('El ID no puede ser nulo');
             }
             if (NM.NameTypeMoney == '' || NM.NameTypeMoney == undefined) {

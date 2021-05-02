@@ -16,11 +16,13 @@ module.exports = {
         } 
         if (tipo == 1 || tipo == 2){
             if (tipo == 1) {
-                var x1 = await PAY.count({where : {'idPayType' : NP.idPayType}});
-                if (x1 > 0) 
-                    errores.push('El ID ya existe');
+                if (NP.idPayType != undefined) {
+                    var x1 = await PAY.count({where : {'idPayType' : NP.idPayType}});
+                    if (x1 > 0) 
+                        errores.push('El ID ya existe');
+                }
             }    
-            if (NP.idPayType == undefined ){
+            if (NP.idPayType == undefined && tipo != 1){
                 errores.push('El ID no puede ser nulo');
             }
             if (NP.NamePayType == '' || NP.NamePayType == undefined) {

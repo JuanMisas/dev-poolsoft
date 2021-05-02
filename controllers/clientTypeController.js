@@ -7,9 +7,7 @@ module.exports = {
     async validateClientType(body, id, tipo){
         var errores = [];
         if (tipo == 1) {
-            if (body.idClientType == '' || body.idClientType == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
+            if (body.idClientType =! undefined) {
                 var x1 = await ClientType.count({where : {'idClientType' : body.idClientType}});
                 if (x1 > 0) 
                     errores.push('El ID ya existe');

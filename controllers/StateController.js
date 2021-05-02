@@ -19,11 +19,13 @@ module.exports = {
         } 
         if (tipo == 1 || tipo == 2){
             if (tipo == 1) {
-                var x1 = await STATE.count({where : {'IdState' : NST.IdState}});
-                if (x1 > 0) 
-                    errores.push('El ID ya existe');
+                if (NST.IdState != undefined) {
+                    var x1 = await STATE.count({where : {'IdState' : NST.IdState}});
+                    if (x1 > 0) 
+                        errores.push('El ID ya existe');
+                }
             }    
-            if (NST.IdState == undefined){
+            if (NST.IdState == undefined && tipo != 1){
                 errores.push('El ID no puede ser nulo');
             }
             if (NST.NameState == '' || NST.NameState == undefined) {
