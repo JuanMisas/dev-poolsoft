@@ -11,6 +11,7 @@ module.exports = {
     async validecity(NCT, id, tipo){
         var errores = [];
         var len = 0;
+        console.log(NCT)
         if (tipo > 1) {
             var x1 = await CITY.count({where : {'IdCity' : id}});
             if (x1 == 0) 
@@ -18,11 +19,13 @@ module.exports = {
         } 
         if (tipo == 1 || tipo == 2){
             if (tipo == 1) {
-                var x1 = await CITY.count({where : {'IdCity' : NCT.IdCity}});
-                if (x1 > 0) 
-                    errores.push('El ID ya existe');
+                if (NCT.IdCity != undefined) {
+                    var x1 = await CITY.count({where : {'IdCity' : NCT.IdCity}});
+                    if (x1 > 0) 
+                        errores.push('El ID ya existe');
+                }    
             }    
-            if (NCT.IdCity == undefined){
+            if (NCT.IdCity == undefined && tipo != 1){
                 errores.push('El ID no puede ser nulo');
             }
             if (NCT.NameCity == '' || NCT.NameCity == undefined) {
