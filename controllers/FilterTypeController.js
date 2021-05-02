@@ -8,7 +8,7 @@ const { INTEGER } = require('sequelize');
 module.exports = {
 
     async valideFilter(NF, id, tipo){
-        var errores = [];
+       var errores = [];
         if (tipo > 1) {
             var x1 = await FT.count({where : {'idFilterType' : id}});
             if (x1 == 0) 
@@ -16,11 +16,13 @@ module.exports = {
         }
         if (tipo == 1 || tipo == 2){
             if (tipo == 1) {
-                var x1 = await FT.count({where : {'idFilterType' : NF.idFilterType}});
-                if (x1 > 0) 
-                    errores.push('El ID ya existe');
+                if (NF.idFilterType != undefined) {
+                    var x1 = await FT.count({where : {'idFilterType' : NF.idFilterType}});
+                    if (x1 > 0) 
+                        errores.push('El ID ya existe');
+                }
             }    
-            if (NF.idFilterType == undefined ){
+            if (NF.idFilterType == undefined && tipo != 1){
                 errores.push('El ID no puede ser nulo');
             }
             if (NF.NameFilterType == '' || NF.NameFilterType == undefined) {
@@ -50,6 +52,7 @@ module.exports = {
 
     async CreateFilterType(NewFiltertype) {
           const err = await this.valideFilter(NewFiltertype,0,1);
+          console.log(NewFiltertype);
           if (err) {
               return err;
           }
