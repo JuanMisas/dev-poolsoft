@@ -24,9 +24,12 @@ var routesCustomer = require('./routes/Customer.js');
 var routesCustomerPool = require('./routes/PoolCustomer.js')
 
 var mySqlConnection = require('./connection.js')
+var cors = require('cors')
+
 
 
 express()
+  .use(cors())
   .use(express.json())
   .use(express.urlencoded({extended: true}))
   .use(routes)
@@ -47,6 +50,7 @@ express()
   .use(routesMoneyType)
   .use(routesCustomer)
   .use(routesCustomerPool)
+  
   .use(express.static(path.join(__dirname, 'public')))
   .set('views', path.join(__dirname, 'views'))
   .set('view engine', 'ejs')
