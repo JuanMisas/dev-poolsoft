@@ -1,111 +1,167 @@
 const Sequelize = require('sequelize');
-const ClientType = require('../models/ps_clienttype');
+const CLIENTTYPE = require('../models/ps_clienttype');
 const server = require('../server/server');
 
 module.exports = {
 
-    async validateClientType(body, id, tipo){
-        var errores = [];
-        if (tipo == 1) {
-            if (body.idClientType == '' || body.idClientType == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
-                var x1 = await ClientType.count({where : {'idClientType' : body.idClientType}});
-                if (x1 > 0) 
-                    errores.push('El ID ya existe');
+    /**
+     * Valida dependiendo del tipo: 'find_one', 'find_all', 'create', 'update', 'delete'.
+     * Variables de entrada: tipo, id, body.
+     * Retorna: un arreglo con los mensajes de error. Si no hay errores, retorna un arreglo vacío.
+     */
+    async validateClientType(tipo, id, body) {
+
+        err = [];
+
+        if (tipo == 'find_one') {
+
+            if (id == undefined) {
+                err.push('El ID del tipo de cliente no puede ser nulo.');
             }
-            if (body.NameClientType == '' || body.NameClientType == undefined)
-                errores.push('El Nombre no puede ser nulo');
-        }
-        if (tipo == 2) {
-            if (id == '' || id == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
-                var x1 = await ClientType.count({where : {'idClientType' : id}});
-                if (x1 == 0)
-                    errores.push('El ID No existe');
+            if (!(await this.existsIdClientType(id))) {
+                err.push('El tipo de cliente no existe.');
             }
-        }
-        if (tipo == 3) {
-            if (id == '' || id == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
-                var x1 = await ClientType.count({where : {'idClientType' : id}});
-                if (x1 == 0)
-                    errores.push('El ID No existe');
+            return err;
+
+        } else if (tipo == 'find_all') {
+
+            return err;
+
+        } else if (tipo == 'create') {
+
+            if (body.idClientType) {
+                if (await this.existsIdClientType(body.idClientType)) {
+                    err.push('El tipo de cliente ya existe.');
+                }
             }
-            if (body.NameClientType == '' || body.NameClientType == undefined)
-                errores.push('El Nombre no puede ser nulo');
-        }
-        if (tipo == 4) {
-            if (id == '' || id == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
-                var x1 = await ClientType.count({where : {'idClientType' : id}});
-                if (x1 == 0)
-                    errores.push('El ID No existe');
+            if (body.NameClientType == null || body.NameClientType == "") {
+                err.push('El nombre no puede ser vacío.');
             }
+            return err;
+
+        } else if (tipo == 'update') {
+
+            if (id == undefined) {
+                err.push('El ID del tipo de cliente no puede ser nulo.');
+            }
+            if (!(await this.existsIdClientType(id))) {
+                err.push('El tipo de cliente no existe.');
+            }
+            if (body.NameClientType == null || body.NameClientType == "") {
+                err.push('El nombre no puede ser vacío.');
+            }
+            return err;
+
+        } else if (tipo == 'delete') {
+
+            if (id == undefined) {
+                err.push('El ID del tipo de cliente no puede ser nulo.');
+            }
+            if (!(await this.existsIdClientType(id))) {
+                err.push('El tipo de cliente no existe.');
+            }
+            return err;
+
         }
-        const len = errores.length;
-        if (len > 0 )
-            return errores;
-        else
-            return false;
     },
-    
-    /* Método que crea un tipo de cliente dado el nameClientType /*/
+
+    //  =======================
+    //  ======= C R U D =======
+    //  =======================
+
+    /**
+     * @param {id} id 
+     * @returns Objeto ClientType o array de errores
+     */
+    async findOneClientType(id) {
+        const err = await this.validateClientType('find_one', id, {});
+        if (err.length > 0) {
+            throw err;
+        }
+
+        const ClientType = await CLIENTTYPE.findByPk(id);
+        return ClientType;
+    },
+
+    /**
+     * 
+     * @returns Array de objetos ClientType
+     */
+    async findAllClientTypes() {
+        // const err = await this.validateClientType('find_all', {}, {});
+        // if (err.length > 0) {
+        //     throw err;
+        // }
+
+        const ClientType = await CLIENTTYPE.findAll({ where: {} });
+        return ClientType;
+    },
+
+    /**
+     * 
+     * @param {body} body 
+     * @returns Objeto ClientType o array de errores
+     */
     async createClientType(body) {
-        const err = await this.validateClientType(body,0,1);
-        if (err)
-            return err;
-        await ClientType.create(body);
+        const err = await this.validateClientType('create', {}, body);
+        if (err.length > 0) {
+            throw err;
+        }
+
+        const ClientType = await CLIENTTYPE.create(body);
+        return ClientType;
     },
 
-    /* Método que encuentra a un tipo de cliente por el idClientType. */ 
-    /* Devuelve un objeto json de tipo ClientType. /*/
-    async findClientTypeById(id) {
-        const err = await this.validateClientType(0,id,2);
-        if (err)
-            return err;
-        const clientType = await ClientType.findByPk(id);
-        return clientType;
-    },
+    /**
+     * 
+     * @param {id} id
+     * @param {body} body  
+     * @returns Variable boolean true o array de errores
+     */
+    async updateClientType(id, body) {
+        const err = await this.validateClientType('update', id, body);
+        if (err.length > 0) {
+            throw err;
+        }
 
-    /* Método que encuentra a todos los registros de ClientType. */ 
-    /* Devuelve un arrray de objetos json de tipo ClientType. /*/
-    async findAllClientType() {
-        const clientType = await ClientType.findAll({where : {}});
-        return clientType;
-    },
-
-    /* Actualizar datos de un tipo de cliente dado el idClientType y nameClientType /*/
-    async updateClientType(body, id) {
-        const err = await this.validateClientType(body,id,3);
-        if (err)
-            return err;
-        clientType = await ClientType.findByPk(id);
-        if (clientType != null) {
-            await ClientType.update({idClientType: id, NameClientType: body.NameClientType} , { 
-                where : { idClientType: id}
-            }).catch(function () {
-                console.log("Promise Rejected");
-           });
+        body.idClientType = id;
+        const ClientType = await CLIENTTYPE.update(body, { where: { idClientType: id } });
+        if (ClientType[0] == 1) {
+            return true;
         }
     },
 
-    /* Método que elimina un tipo de cliente dado el idClientType /*/
+    /**
+     * 
+     * @param {id} id 
+     * @returns Variable boolean true o array de errores
+     */
     async deleteClientType(id) {
-        const err = await this.validateClientType(0,id,4);
-        if (err)
-            return err;
-        await ClientType.destroy({ where: { idClientType: id } });
+        const err = await this.validateClientType('delete', id, {});
+        if (err.length > 0) {
+            throw err;
+        }
+
+        const ClientType = await CLIENTTYPE.destroy({ where: { idClientType: id } });
+        if (ClientType == 1) {
+            return true;
+        }
     },
 
-    /* Método que encuentra a un tipo de cliente por el nameClientType. */ 
-    /* Devuelve un objeto json de tipo ClientType. */
-    async findClientType(nameClientType) {
-        const clientType = await ClientType.findOne({ where: { NameClientType: nameClientType } });
-        return clientType;
+    //  ===========================
+    //  ======= Q U E R Y S =======
+    //  ===========================
+
+    /** Devuelve true si lo encuentra, sino devuelve false */
+    async existsIdClientType(id) {
+        aux = await CLIENTTYPE.findByPk(id).catch(function() {
+            console.log("Promise Rejected");
+        });
+        if (aux == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 };

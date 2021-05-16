@@ -1,21 +1,21 @@
 const routes = require('express').Router();
 
-const State = require('../../models/ps_state');
-const StateController = require('../../controllers/stateController');
+const Supply = require('../../models/ps_supply');
+const SupplyController = require('../../controllers/SupplyController');
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
- * Objeto json de tipo State
+ * Objeto json de tipo Supply
  * { atributo1: value1, atributo2: value2 }
  * 
  * ==== RETURN SI HAY ERROR ====
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.get('/State/:id', async(req, res) => {
+routes.get('/Supply/:id', async(req, res) => {
 
     try {
-        st = await StateController.findOneState(req.params.id);
+        st = await SupplyController.findOneSupply(req.params.id);
         res.send(st);
     } catch (err) {
         res.status(400).send(err);
@@ -26,13 +26,13 @@ routes.get('/State/:id', async(req, res) => {
 
 /**
  * ==== RETURN ====
- * Array de objetos json de tipo State
+ * Array de objetos json de tipo Supply
  * [ { atributo1: value1, atributo2: value2 }, { atributo1: value1, atributo2: value2 } ]
  */
-routes.get('/State/', async(req, res) => {
+routes.get('/Supply/', async(req, res) => {
 
     try {
-        st = await StateController.findAllStates();
+        st = await SupplyController.findAllSupplies();
     } finally {
         res.send(st);
     }
@@ -42,17 +42,17 @@ routes.get('/State/', async(req, res) => {
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
- * Objeto json de tipo State
+ * Objeto json de tipo Supply
  * { atributo1: value1, atributo2: value2 }
  * 
  * ==== RETURN SI HAY ERROR ====
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.post('/State/', async(req, res) => {
+routes.post('/Supply/', async(req, res) => {
 
     try {
-        st = await StateController.createState(req.body);
+        st = await SupplyController.createSupply(req.body);
         res.send(st);
     } catch (err) {
         res.status(400).send(err);
@@ -69,10 +69,10 @@ routes.post('/State/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.put('/State/:id', async(req, res) => {
+routes.put('/Supply/:id', async(req, res) => {
 
     try {
-        st = await StateController.updateState(req.params.id, req.body);
+        st = await SupplyController.updateSupply(req.params.id, req.body);
         res.send(st);
     } catch (err) {
         res.status(400).send(err);
@@ -89,10 +89,10 @@ routes.put('/State/:id', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.delete('/State/:id', async(req, res) => {
+routes.delete('/Supply/:id', async(req, res) => {
 
     try {
-        st = await StateController.deleteState(req.params.id);
+        st = await SupplyController.deleteSupply(req.params.id);
         res.send(st);
     } catch (err) {
         res.status(400).send(err);

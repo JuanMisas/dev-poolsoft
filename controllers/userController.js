@@ -5,15 +5,15 @@ const server = require('../server/server');
 
 module.exports = {
 
-    async validateUser(body, id, tipo){
+    async validateUser(body, id, tipo) {
         var errores = [];
         isRole = false;
         if (tipo == 1) {
             if (body.idUser == '' || body.idUser == undefined)
                 errores.push('El ID no puede ser nulo');
             if (errores.length == 0) {
-                var x1 = await User.count({where : {'idUser' : body.idUser}});
-                if (x1 > 0) 
+                var x1 = await User.count({ where: { 'idUser': body.idUser } });
+                if (x1 > 0)
                     errores.push('El ID ya existe');
             }
             if (body.NameUser == '' || body.NameUser == undefined)
@@ -24,9 +24,9 @@ module.exports = {
                 errores.push('La contraseña debe tener al menos 8 caracteres');
             if (body.RoleUser == '' || body.RoleUser == undefined)
                 errores.push('El Rol no puede ser nulo');
-                isRole = true;
+            isRole = true;
             if (isRole) {
-                var x1 = await Role.count({where : {'idRole' : body.RoleUser}});
+                var x1 = await Role.count({ where: { 'idRole': body.RoleUser } });
                 if (x1 == 0)
                     errores.push('El rol no existe');
             }
@@ -35,7 +35,7 @@ module.exports = {
             if (id == '' || id == undefined)
                 errores.push('El ID no puede ser nulo');
             if (errores.length == 0) {
-                var x1 = await User.count({where : {'idUser' : id}});
+                var x1 = await User.count({ where: { 'idUser': id } });
                 if (x1 == 0)
                     errores.push('El ID No existe');
             }
@@ -44,7 +44,7 @@ module.exports = {
             if (id == '' || id == undefined)
                 errores.push('El ID no puede ser nulo');
             if (errores.length == 0) {
-                var x1 = await User.count({where : {'idUser' : id}});
+                var x1 = await User.count({ where: { 'idUser': id } });
                 if (x1 == 0)
                     errores.push('El ID No existe');
             }
@@ -56,9 +56,9 @@ module.exports = {
                 errores.push('La contraseña debe tener al menos 8 caracteres');
             if (body.RoleUser == '' || body.RoleUser == undefined)
                 errores.push('El Rol no puede ser nulo');
-                isRole = true;
+            isRole = true;
             if (isRole) {
-                var x1 = await Role.count({where : {'idRole' : body.RoleUser}});
+                var x1 = await Role.count({ where: { 'idRole': body.RoleUser } });
                 if (x1 == 0)
                     errores.push('El rol no existe');
             }
@@ -67,13 +67,13 @@ module.exports = {
             if (id == '' || id == undefined)
                 errores.push('El ID no puede ser nulo');
             if (errores.length == 0) {
-                var x1 = await User.count({where : {'idUser' : id}});
+                var x1 = await User.count({ where: { 'idUser': id } });
                 if (x1 == 0)
                     errores.push('El ID No existe');
             }
         }
         const len = errores.length;
-        if (len > 0 )
+        if (len > 0)
             return errores;
         else
             return false;
@@ -81,32 +81,32 @@ module.exports = {
 
     /* Método que crea un usuario dados el NameUser, PasswordUser, RoleUser */
     async createUser(body) {
-        const err = await this.validateUser(body,0,1);
+        const err = await this.validateUser(body, 0, 1);
         if (err)
             return err;
         await User.create(body);
     },
 
-    /* Método que encuentra a un usuario por el idUser. */ 
+    /* Método que encuentra a un usuario por el idUser. */
     /* Devuelve un objeto json de tipo User. */
     async findUserById(id) {
-        const err = await this.validateUser(0,id,2);
+        const err = await this.validateUser(0, id, 2);
         if (err)
             return err;
         const user = await User.findByPk(id);
         return user;
     },
 
-    /* Método que encuentra a todos los registros de User. */ 
+    /* Método que encuentra a todos los registros de User. */
     /* Devuelve un array de objetos json de tipo User. */
     async findAllUser() {
-        const user = await User.findAll({where : {}});
+        const user = await User.findAll({ where: {} });
         return user;
     },
 
     /* Actualizar datos de un usuario dado el idUser */
     async updateUser(body, id) {
-        const err = await this.validateUser(body,id,3);
+        const err = await this.validateUser(body, id, 3);
         if (err)
             return err;
         user = await User.findByPk(id);
@@ -115,27 +115,43 @@ module.exports = {
                 NameUser: body.NameUser,
                 PasswordUser: body.PasswordUser,
                 RoleUser: body.RoleUser
-            }, { 
-                where : { idUser: id}
-            }).catch(function () {
+            }, {
+                where: { idUser: id }
+            }).catch(function() {
                 console.log("Promise Rejected");
-           });
+            });
         }
     },
 
     /* Método que elimina un usuario dado el idUser */
     async deleteUser(id) {
-        const err = await this.validateUser(0,id,4);
+        const err = await this.validateUser(0, id, 4);
         if (err)
             return err;
         await User.destroy({ where: { idUser: id } });
     },
 
-    /* Método que encuentra a un usuario por el username y el password. */ 
+    /* Método que encuentra a un usuario por el username y el password. */
     /* Devuelve un objeto json de tipo User. */
     async findUser(username, password) {
         const user = await User.findOne({ where: { NameUser: username, PasswordUser: password } });
         return user;
+    },
+
+    //  ===========================
+    //  ======= Q U E R Y S =======
+    //  ===========================
+
+    /** Devuelve true si lo encuentra, sino devuelve false */
+    async existsIdUser(id) {
+        aux = await User.findByPk(id).catch(function() {
+            console.log("Promise Rejected");
+        });
+        if (aux == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 };

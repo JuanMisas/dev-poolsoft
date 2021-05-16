@@ -1,221 +1,325 @@
 const Sequelize = require('sequelize');
-const CUSTOMER = require('../models/ps_Customer');
+const CUSTOMER = require('../models/ps_customer');
 const server = require('../server/server');
 const { validate } = require('../server/connection');
 const { INTEGER } = require('sequelize');
-const PAGO = require('../controllers/PayTypeController');
-const TypeIdNumber = require('../controllers/idClientTypeController');
-const TypeCustomer = require('../controllers/clientTypeController');
-const Country = require('../controllers/CountryController');
-const State = require('../controllers/StateController');
-const City = require('../controllers/CityController');
-const Money = require('../controllers/MoneyTypeController');
+const PayTypeController = require('../controllers/PayTypeController');
+const IdClientTypeController = require('./IdClientTypeController');
+const ClientTypeController = require('./ClientTypeController');
+const CountryController = require('../controllers/CountryController');
+const StateController = require('../controllers/StateController');
+const CityController = require('../controllers/CityController');
+const MoneyTypeController = require('../controllers/MoneyTypeController');
 
 
 module.exports = {
 
-    async valideCustomer(CUS, id, tipo){
-        var errores = [];
-        var len1 = 0;
-        if (tipo > 1) {
-            if (tipo != 6) {
-                var x1 = await CUSTOMER.count({where : {'idCustomer' : id}});
-                if (x1 == 0) 
-                    errores.push('El ID No existe');
-            }
-            else{
-                var x1 = await CUSTOMER.count({where : {'IdNumberCustomers' : id}});
-                if (x1 == 0) 
-                    errores.push('El Numero de identificacion no existe');
-            }
-        } 
-        if (tipo == 1 || tipo == 2){
-            if (tipo == 1) {
-                var x1 = await CUSTOMER.count({where : {'idCustomer' : CUS.idCustomer}});
-                if (x1 > 0) 
-                    errores.push('El ID ya existe');
-            }    
-            if (CUS.idCustomer == undefined ){
-                errores.push('El ID no puede ser nulo');
-            }
-            if (CUS.NameCustomer == '' || CUS.NameCustomer == undefined) {
-                errores.push('El Nombre no puede ser nulo');
-            }
-        }
-        if (tipo == 1 || tipo ==2){
-            if (CUS.DateEnterCustomers == '' || CUS.DateEnterCustomers == undefined) {
-                errores.push('La fecha de ingresa no debe ser nula')
-            }
-            if (CUS.TypePayCustomers == '' || CUS.TypePayCustomers == undefined) {
-                errores.push('La forma de pago no puede ser nula')
-            }
-            else {
-                // Validar que el tipo de pago si exista
-                const pay = PAGO.findPayTypeOne(CUS.TypePayCustomers);
-                len1 = pay.length;
-                if (len1 > 0) {
-                    errores.push('El tipo de pago no existe')
-                }
-            }
-                
-            if (CUS.IdNumberCustomers == '' || CUS.IdNumberCustomers == undefined) {
-                errores.push('El numero de identificacion del cliente no debe ser nula')
-            }
-        
-            if (CUS.IdClientTypeCustomers == '' || CUS.IdClientTypeCustomers == undefined) {
-                errores.push('El tipo de identificacion no debe ser nula')
-            }
-            else {
-                // Validar que el tipo de identificacion exista.
-                const TIC = TypeIdNumber.findIdClientTypeById(CUS.IdClientTypeCustomers)
-                len1 = TIC.length;
-                if (len1 > 0){
-                    errores.push('El tipo de Identificacion del cliente no existe')
-                }
-            }
+    /**
+     * Valida dependiendo del tipo: 'find_one', 'find_all', 'create', 'update', 'delete'.
+     * Variables de entrada: tipo, id, body.
+     * Retorna: un arreglo con los mensajes de error. Si no hay errores, retorna un arreglo vacío.
+     */
+    async validateCustomer(tipo, id, body) {
 
-            if (CUS.StatusCustomers == '' || CUS.StatusCustomers == undefined) {
-                errores.push('El status del cliente no puede ser nulo')
-            }
-            else {
-                // Validar que estatus 1= Activo 2=inactivo 3=Inactivo en mora, 4=inactivo temporalmente
-                if (CUS.StatusCustomers < 0 || CUS.StatusCustomers > 5) {
-                    errores.push('El status debe ser Activo, inactivo, Inactivo en mora o inactivo temporalmente')
-                }
-            }   
+        err = [];
 
-            if (CUS.ClientTypecustomers == '' || CUS.ClientTypecustomers == undefined) {
-                errores.push('El tipo de cliente no puede ser nulo')
-            }
-            else {
-            //Validar que el tipo de cliente exista
-            const TC = TypeCustomer.findClientTypeById(CUS.ClientTypecustomers)
-            len1 = TC.length;
-            if (len1 > 0 ){
-                errores.push('El tipo de cliente no existe')
-                }
-            }
+        if (tipo == 'find_one') {
 
-            if (CUS.AddressBillCustomers == '' || CUS.AddressBillCustomers == undefined) {
-                errores.push('La direccion no debe ser nula')
+            if (id == undefined) {
+                err.push('El ID del cliente no puede ser nulo.');
             }
-
-            if (CUS.CountryBillCustomers == '' || CUS.CountryBillCustomers == undefined) {
-                errores.push('El pais no debe ser nula')
-            }else {
-            // Validad la que el pais existe
-                const CO = Country.findCountryOne(CUS.CountryBillCustomers);
-                len1 = CO.length;
-                if (len1 > 0 ){
-                    push.errores('El pais no existe')
-                }
+            if (!(await this.existsIdCustomer(id))) {
+                err.push('El cliente no existe.');
             }
-
-            if (CUS.EstateBillcustomers == '' || CUS.EstateBillcustomers == undefined) {
-                errores.push('El estado no debe ser nula')
-            }else {
-                // valida que el estado exista
-                const ST = State.findStateOne(CUS.EstateBillcustomers)
-                len1 = ST.length;
-                if (len1 > 0 ){
-                    push.errores('El pais no existe')
-                }
-            }
-
-            if (CUS.CityBillCustomers = '' || CUS.CityBillCustomers == undefined) {
-                errores.push('La Ciudad no debe ser nula')
-            }else {
-                // Valida que la ciudad exista
-                const CT = City.findCityOne(CUS.CityBillCustomers)
-                len1 = CT.length;
-                if (len1 > 0 ) {
-                    push.errores('La cuidad no existe')
-                }
-            }
-
-            if (CUS.FeeCustomers == '' || CUS.FeeCustomers == undefined) {
-                errores.push('La cuota que debe pagar el cliente no debe ser nula')
-            }
-
-            if (CUS.FeeCustomers < 0) {
-                errores.push('La cuota que debe pagar el cliente no debe ser menor que cero')
-            }
-        
-            if (CUS.IdTypeMoneycustomers == '' || CUS.IdTypeMoneycustomers == undefined) {
-                errores.push('El tipo de moneda no debe ser nula')
-            }
-            // validar que el tipo de moneda exista
-
-            if (CUS.Phone1customer == '' || CUS.Phone1customer == undefined) {
-                errores.push('el telefono principal no puede ser nulo')
-            }
-
-            if (CUS.Emailcustomer == '' || CUS.Emailcustomer == undefined) {
-                errores.push('El email principal no puede ser nulo')
-            }
-            //Validar el formato del email
-        }
-        const len = errores.length;
-        if (len > 0 )
-                return errores;
-        else
-            return false;
-    },
-
-    async retorneIdbyNumber(numero){
-        const Customer = await CUSTOMER.findAll({where : {IdNumberCustomers : numero}});
-        return Customer.idCustomer;
-    },
-
-    async findCustomerOneById(id) {
-        const err = (await this.valideCustomer({},id,5));
-        if (err) {
             return err;
+
+        } else if (tipo == 'find_all') {
+
+            return err;
+
+        } else if (tipo == 'create') {
+
+            if (body.idCustomer) {
+                if (await this.existsIdCustomer(body.idCustomer)) {
+                    err.push('El cliente ya existe.');
+                }
+            }
+            if (body.NameCustomer == null || body.NameCustomer == "") {
+                err.push('El nombre no puede ser vacío.');
+            }
+            if (body.TypePayCustomers == null || body.TypePayCustomers == "") {
+                err.push('El ID del tipo de pago no puede ser vacío.');
+            }
+            if (body.TypePayCustomers) {
+                if (!(await PayTypeController.existsIdPayType(body.TypePayCustomers))) {
+                    err.push('El tipo de pago no existe.');
+                }
+            }
+            if (body.IdNumberCustomers == null || body.IdNumberCustomers == "") {
+                err.push('El número de clientes no puede ser vacío.');
+            }
+            if (body.IdClientTypeCustomers == null || body.IdClientTypeCustomers == "") {
+                err.push('El ID del tipo de cliente no puede ser vacío.');
+            }
+            if (body.IdClientTypeCustomers) {
+                if (!(await ClientTypeController.existsIdClientType(body.IdClientTypeCustomers))) {
+                    err.push('El tipo de cliente no existe.');
+                }
+            }
+            if (body.StatusCustomers == null || body.StatusCustomers == "") {
+                err.push('El status del cliente no puede ser vacío.');
+            }
+            if (body.IdIdClientTypeCustomers == null || body.IdIdClientTypeCustomers == "") {
+                err.push('El ID del tipo de identificación de cliente no puede ser vacío.');
+            }
+            if (body.IdIdClientTypeCustomers) {
+                if (!(await IdClientTypeController.existsIdIdClientType(body.IdIdClientTypeCustomers))) {
+                    err.push('El tipo de identificación de cliente no existe.');
+                }
+            }
+            if (body.AddressBillCustomers == null || body.AddressBillCustomers == "") {
+                err.push('La dirección de pago del cliente no puede ser vacío.');
+            }
+            if (body.CountryBillCustomers == null || body.CountryBillCustomers == "") {
+                err.push('El ID del país de pago del cliente no puede ser vacío.');
+            }
+            if (body.CountryBillCustomers) {
+                if (!(await CountryController.existsIdCountry(body.CountryBillCustomers))) {
+                    err.push('El país de pago del cliente no existe.');
+                }
+            }
+            if (body.EstateBillcustomers == null || body.EstateBillcustomers == "") {
+                err.push('El ID del estado desde donde paga el cliente no puede ser vacío.');
+            }
+            if (body.EstateBillcustomers) {
+                if (!(await StateController.existsIdState(body.EstateBillcustomers))) {
+                    err.push('El estado desde donde paga el cliente no existe.');
+                }
+            }
+            if (body.CityBillCustomers == null || body.CityBillCustomers == "") {
+                err.push('El ID de la ciudad desde donde paga el cliente no puede ser vacío.');
+            }
+            if (body.CityBillCustomers) {
+                if (!(await CityController.existsIdCity(body.CityBillCustomers))) {
+                    err.push('La ciudad desde donde paga el cliente no existe.');
+                }
+            }
+            if (body.FeeCustomers == null || body.FeeCustomers == "") {
+                err.push('El impuesto del cliente no puede ser vacío.');
+            }
+            if (body.IdTypeMoneycustomers == null || body.IdTypeMoneycustomers == "") {
+                err.push('El ID del tipo de moneda del cliente no puede ser vacío.');
+            }
+            if (body.IdTypeMoneycustomers) {
+                if (!(await MoneyTypeController.existsIdMoneyType(body.IdTypeMoneycustomers))) {
+                    err.push('El tipo de moneda del cliente no existe.');
+                }
+            }
+            if (body.Phone1customer == null || body.Phone1customer == "") {
+                err.push('El número de teléfono 1 no puede ser vacío.');
+            }
+            if (body.Emailcustomer == null || body.Emailcustomer == "") {
+                err.push('El E-mail no puede ser vacío.');
+            }
+            return err;
+
+        } else if (tipo == 'update') {
+
+            if (id == undefined) {
+                err.push('El ID del cliente no puede ser nulo.');
+            }
+            if (!(await this.existsIdCustomer(id))) {
+                err.push('El cliente no existe.');
+            }
+            if (body.NameCustomer == null || body.NameCustomer == "") {
+                err.push('El nombre no puede ser vacío.');
+            }
+            if (body.TypePayCustomers == null || body.TypePayCustomers == "") {
+                err.push('El ID del tipo de pago no puede ser vacío.');
+            }
+            if (body.TypePayCustomers) {
+                if (!(await PayTypeController.existsIdPayType(body.TypePayCustomers))) {
+                    err.push('El tipo de pago no existe.');
+                }
+            }
+            if (body.IdNumberCustomers == null || body.IdNumberCustomers == "") {
+                err.push('El número de clientes no puede ser vacío.');
+            }
+            if (body.IdClientTypeCustomers == null || body.IdClientTypeCustomers == "") {
+                err.push('El ID del tipo de cliente no puede ser vacío.');
+            }
+            if (body.IdClientTypeCustomers) {
+                if (!(await ClientTypeController.existsIdClientType(body.IdClientTypeCustomers))) {
+                    err.push('El tipo de cliente no existe.');
+                }
+            }
+            if (body.StatusCustomers == null || body.StatusCustomers == "") {
+                err.push('El status del cliente no puede ser vacío.');
+            }
+            if (body.IdIdClientTypeCustomers == null || body.IdIdClientTypeCustomers == "") {
+                err.push('El ID del tipo de identificación de cliente no puede ser vacío.');
+            }
+            if (body.IdIdClientTypeCustomers) {
+                if (!(await IdClientTypeController.existsIdIdClientType(body.IdIdClientTypeCustomers))) {
+                    err.push('El tipo de identificación de cliente no existe.');
+                }
+            }
+            if (body.AddressBillCustomers == null || body.AddressBillCustomers == "") {
+                err.push('La dirección de pago del cliente no puede ser vacío.');
+            }
+            if (body.CountryBillCustomers == null || body.CountryBillCustomers == "") {
+                err.push('El ID del país de pago del cliente no puede ser vacío.');
+            }
+            if (body.CountryBillCustomers) {
+                if (!(await CountryController.existsIdCountry(body.CountryBillCustomers))) {
+                    err.push('El país de pago del cliente no existe.');
+                }
+            }
+            if (body.EstateBillcustomers == null || body.EstateBillcustomers == "") {
+                err.push('El ID del estado desde donde paga el cliente no puede ser vacío.');
+            }
+            if (body.EstateBillcustomers) {
+                if (!(await StateController.existsIdState(body.EstateBillcustomers))) {
+                    err.push('El estado desde donde paga el cliente no existe.');
+                }
+            }
+            if (body.CityBillCustomers == null || body.CityBillCustomers == "") {
+                err.push('El ID de la ciudad desde donde paga el cliente no puede ser vacío.');
+            }
+            if (body.CityBillCustomers) {
+                if (!(await CityController.existsIdCity(body.CityBillCustomers))) {
+                    err.push('La ciudad desde donde paga el cliente no existe.');
+                }
+            }
+            if (body.FeeCustomers == null || body.FeeCustomers == "") {
+                err.push('El impuesto del cliente no puede ser vacío.');
+            }
+            if (body.IdTypeMoneycustomers == null || body.IdTypeMoneycustomers == "") {
+                err.push('El ID del tipo de moneda del cliente no puede ser vacío.');
+            }
+            if (body.IdTypeMoneycustomers) {
+                if (!(await MoneyTypeController.existsIdMoneyType(body.IdTypeMoneycustomers))) {
+                    err.push('El tipo de moneda del cliente no existe.');
+                }
+            }
+            if (body.Phone1customer == null || body.Phone1customer == "") {
+                err.push('El número de teléfono 1 no puede ser vacío.');
+            }
+            if (body.Emailcustomer == null || body.Emailcustomer == "") {
+                err.push('El E-mail no puede ser vacío.');
+            }
+            return err;
+
+        } else if (tipo == 'delete') {
+
+            if (id == undefined) {
+                err.push('El ID del cliente no puede ser nulo.');
+            }
+            if (!(await this.existsIdCustomer(id))) {
+                err.push('El cliente no existe.');
+            }
+            return err;
+
         }
+    },
+
+    //  =======================
+    //  ======= C R U D =======
+    //  =======================
+
+    /**
+     * @param {id} id 
+     * @returns Objeto Customer o array de errores
+     */
+    async findOneCustomer(id) {
+        const err = await this.validateCustomer('find_one', id, {});
+        if (err.length > 0) {
+            throw err;
+        }
+
         const Customer = await CUSTOMER.findByPk(id);
         return Customer;
     },
 
-    async findCustomerOnebyNumber(id) {
-        const err = (await this.valideCustomer({},id,6));
-        if (err) {
-            return err;
+    /**
+     * 
+     * @returns Array de objetos Customer
+     */
+    async findAllCustomers() {
+        // const err = await this.validateCustomer('find_all', {}, {});
+        // if (err.length > 0) {
+        //     throw err;
+        // }
+
+        const Customer = await CUSTOMER.findAll({ where: {} });
+        return Customer;
+    },
+
+    /**
+     * 
+     * @param {body} body 
+     * @returns Objeto Customer o array de errores
+     */
+    async createCustomer(body) {
+        const err = await this.validateCustomer('create', {}, body);
+        if (err.length > 0) {
+            throw err;
         }
-        const Customer = await CUSTOMER.findAll({where : {IdNumberCustomers : id}});
+
+        const Customer = await CUSTOMER.create(body);
         return Customer;
     },
 
-
-    async findAllCustomer(){
-        const Customer = await CUSTOMER.findAll({where : {}});
-        return Customer;
-    },
-
-    async CreateCustomer(NewCustomer) {
-          const err = await this.valideCustomer(NewCustomer,0,1);
-          if (err) {
-              return err;
-          }
-          const Customer = await CUSTOMER.create(NewCustomer);
-          return Customer;
-    },
-
-    async UpdateCustomer(body, id) {
-        const err = await this.valideCustomer(body,id,2);
-        if (err) {
-            return err;
+    /**
+     * 
+     * @param {id} id
+     * @param {body} body  
+     * @returns Variable boolean true o array de errores
+     */
+    async updateCustomer(id, body) {
+        const err = await this.validateCustomer('update', id, body);
+        if (err.length > 0) {
+            throw err;
         }
-        const Customer = await CUSTOMER.update(body , {where : { idCustomer : id}});
-        return Customer;
-    },
 
-    async DeleteCustomer(id) {
-        const err = await this.valideCustomer({},id,3);
-        if (err) {
-            return err;
+        body.idCustomer = id;
+        const Customer = await CUSTOMER.update(body, { where: { idCustomer: id } });
+        if (Customer[0] == 1) {
+            return true;
         }
-      const Customer = await CUSTOMER.destroy({where : { idCustomer : id}});
-        return Customer;
     },
 
-};  
+    /**
+     * 
+     * @param {id} id 
+     * @returns Variable boolean true o array de errores
+     */
+    async deleteCustomer(id) {
+        const err = await this.validateCustomer('delete', id, {});
+        if (err.length > 0) {
+            throw err;
+        }
+
+        const Customer = await CUSTOMER.destroy({ where: { idCustomer: id } });
+        if (Customer == 1) {
+            return true;
+        }
+    },
+
+    //  ===========================
+    //  ======= Q U E R Y S =======
+    //  ===========================
+
+    /** Devuelve true si lo encuentra, sino devuelve false */
+    async existsIdCustomer(id) {
+        aux = await CUSTOMER.findByPk(id).catch(function() {
+            console.log("Promise Rejected");
+        });
+        if (aux == null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+};

@@ -1,28 +1,28 @@
 const Sequelize = require('sequelize');
-const Supplies = require('../models/ps_supplies');
+const Supplies = require('../models/ps_supply');
 const UnitedMeasured = require('../models/ps_unitedmeasured');
 const server = require('../server/server');
 
 module.exports = {
 
-    async validateSupplies(body, id, tipo){
+    async validateSupplies(body, id, tipo) {
         var errores = [];
         isUnitedMeasured = false;
         if (tipo == 1) {
             if (body.idSupplies == '' || body.idSupplies == undefined)
                 errores.push('El ID no puede ser nulo');
             if (errores.length == 0) {
-                var x1 = await Supplies.count({where : {'idSupplies' : body.idSupplies}});
-                if (x1 > 0) 
+                var x1 = await Supplies.count({ where: { 'idSupplies': body.idSupplies } });
+                if (x1 > 0)
                     errores.push('El ID ya existe');
             }
             if (body.NameSupplies == '' || body.NameSupplies == undefined)
                 errores.push('El Nombre no puede ser nulo');
             if (body.IdUnitedMeasuredSupplies == '' || body.IdUnitedMeasuredSupplies == undefined)
                 errores.push('La unidad de medida no puede ser nula');
-                isUnitedMeasured = true;
+            isUnitedMeasured = true;
             if (isUnitedMeasured) {
-                var x1 = await UnitedMeasured.count({where : {'idUnitedMeasured' : body.IdUnitedMeasuredSupplies}});
+                var x1 = await UnitedMeasured.count({ where: { 'idUnitedMeasured': body.IdUnitedMeasuredSupplies } });
                 if (x1 == 0)
                     errores.push('La unidad de medida no existe');
             }
@@ -33,7 +33,7 @@ module.exports = {
             if (id == '' || id == undefined)
                 errores.push('El ID no puede ser nulo');
             if (errores.length == 0) {
-                var x1 = await Supplies.count({where : {'idSupplies' : id}});
+                var x1 = await Supplies.count({ where: { 'idSupplies': id } });
                 if (x1 == 0)
                     errores.push('El ID No existe');
             }
@@ -42,7 +42,7 @@ module.exports = {
             if (id == '' || id == undefined)
                 errores.push('El ID no puede ser nulo');
             if (errores.length == 0) {
-                var x1 = await Supplies.count({where : {'idSupplies' : id}});
+                var x1 = await Supplies.count({ where: { 'idSupplies': id } });
                 if (x1 == 0)
                     errores.push('El ID No existe');
             }
@@ -50,9 +50,9 @@ module.exports = {
                 errores.push('El Nombre no puede ser nulo');
             if (body.IdUnitedMeasuredSupplies == '' || body.IdUnitedMeasuredSupplies == undefined)
                 errores.push('La unidad de medida no puede ser nula');
-                isUnitedMeasured = true;
+            isUnitedMeasured = true;
             if (isUnitedMeasured) {
-                var x1 = await UnitedMeasured.count({where : {'idUnitedMeasured' : body.IdUnitedMeasuredSupplies}});
+                var x1 = await UnitedMeasured.count({ where: { 'idUnitedMeasured': body.IdUnitedMeasuredSupplies } });
                 if (x1 == 0)
                     errores.push('La unidad de medida no existe');
             }
@@ -63,13 +63,13 @@ module.exports = {
             if (id == '' || id == undefined)
                 errores.push('El ID no puede ser nulo');
             if (errores.length == 0) {
-                var x1 = await Supplies.count({where : {'idSupplies' : id}});
+                var x1 = await Supplies.count({ where: { 'idSupplies': id } });
                 if (x1 == 0)
                     errores.push('El ID No existe');
             }
         }
         const len = errores.length;
-        if (len > 0 )
+        if (len > 0)
             return errores;
         else
             return false;
@@ -77,32 +77,32 @@ module.exports = {
 
     /* Método que crea un insumo dados el NameSupply, IdUnitedMeasuredSupply y DescriptionSupply */
     async createSupply(body) {
-        const err = await this.validateSupplies(body,0,1);
+        const err = await this.validateSupplies(body, 0, 1);
         if (err)
             return err;
         await Supplies.create(body);
     },
 
-    /* Método que encuentra un insumo por el idSupply. */ 
+    /* Método que encuentra un insumo por el idSupply. */
     /* Devuelve un objeto json de tipo Supplies. */
     async findSupplyById(id) {
-        const err = await this.validateSupplies(0,id,2);
+        const err = await this.validateSupplies(0, id, 2);
         if (err)
             return err;
         const supply = await Supplies.findByPk(id);
         return supply;
     },
 
-    /* Método que encuentra a todos los registros de Supply. */ 
+    /* Método que encuentra a todos los registros de Supply. */
     /* Devuelve un array de objetos json de tipo Supply. */
     async findAllSupply() {
-        const supply = await Supply.findAll({where : {}});
+        const supply = await Supply.findAll({ where: {} });
         return supply;
     },
 
     /* Actualizar datos de un insumo dado el idSupply */
     async updateSupply(body, id) {
-        const err = await this.validateSupplies(body,id,3);
+        const err = await this.validateSupplies(body, id, 3);
         if (err)
             return err;
         supply = await Supplies.findByPk(id);
@@ -111,27 +111,43 @@ module.exports = {
                 NameSupplies: body.NameSupplies,
                 IdUnitedMeasuredSupplies: body.IdUnitedMeasuredSupplies,
                 DescriptionSupplies: body.DescriptionSupplies
-            }, { 
-                where : { idSupplies: id}
-            }).catch(function () {
+            }, {
+                where: { idSupplies: id }
+            }).catch(function() {
                 console.log("Promise Rejected");
-           });
+            });
         }
     },
 
     /* Método que elimina un insumo dado el idSupply */
     async deleteSupply(id) {
-        const err = await this.validateSupplies(0,id,4);
+        const err = await this.validateSupplies(0, id, 4);
         if (err)
             return err;
         await Supplies.destroy({ where: { idSupplies: id } });
     },
 
-    /* Método que encuentra un insumo por el nameSupply. */ 
+    /* Método que encuentra un insumo por el nameSupply. */
     /* Devuelve un objeto json de tipo Supplies. */
     async findSupply(nameSupply) {
         const supply = await Supplies.findOne({ where: { NameSupplies: nameSupply } });
         return supply;
+    },
+
+    //  ===========================
+    //  ======= Q U E R Y S =======
+    //  ===========================
+
+    /** Devuelve true si lo encuentra, sino devuelve false */
+    async existsIdSupply(id) {
+        aux = await Supplies.findByPk(id).catch(function() {
+            console.log("Promise Rejected");
+        });
+        if (aux == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
 };

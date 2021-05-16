@@ -5,7 +5,7 @@ const session = require('express-session');
 const PassportLocal = require('passport-local').Strategy;
 const path = require('path');
 const app = express();
-const userController = require('../../controllers/userController');
+const userController = require('../../controllers/UserController');
 const User = require('../../models/ps_user');
 const bcrypt = require('bcryptjs');
 const { check, validationResult } = require('express-validator');
@@ -22,30 +22,30 @@ app.use(passport.session());
 app.set('view engine', 'ejs');
 
 /* Autentica si el usuario ingresado en el login en válido */
-passport.use(new PassportLocal(async function(username, password, done){
+passport.use(new PassportLocal(async function(username, password, done) {
     response = await userController.findUser(username, password);
-    if(response != null) {
-        return done(null,{ id: response.idUser, name: response.NameUser });
-    }else{
+    if (response != null) {
+        return done(null, { id: response.idUser, name: response.NameUser });
+    } else {
         done(null, false);
     }
 }));
 
 /* Serialización del usuario autenticado */
-passport.serializeUser(function(user, done){
+passport.serializeUser(function(user, done) {
     done(null, user.id);
 });
 
 /* Deserialización del usuario autenticado */
-passport.deserializeUser(function(id, done){
+passport.deserializeUser(function(id, done) {
     user = User.findByPk(id);
-    done(null, {id: user.idUser, name: user.NameUser });
+    done(null, { id: user.idUser, name: user.NameUser });
 });
 
 /* Redireccionamiento desde "/" */
 app.get("/", (req, res, next) => {
     // Si no hemos iniciado sesión redireccionar a /login
-    if(req.isAuthenticated()) return next();
+    if (req.isAuthenticated()) return next();
     res.redirect("/login");
 }, (req, res) => {
     // Si ya iniciamos mostrar bienvenida
@@ -71,7 +71,7 @@ app.get("/recover", (req, res) => {
 app.post("/register", [
     check('username', 'El username es obligatorio').not().isEmpty(),
     check('password', 'El password es obligatorio').not().isEmpty()
-], async (req, res) => {
+], async(req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({ errores: errors.array() })
@@ -86,4 +86,4 @@ app.get("/test", (req, res) => {
     res.render("pages/login/recover");
 });
 
-module.exports = app;   
+module.exports = app;

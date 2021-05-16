@@ -1,18 +1,24 @@
 const Sequelize = require('sequelize');
 const db = require('../server/connection');
 
-const State = db.define('ps_state', {
-    IdState: {
+// Schema de la tabla ps_supply
+const Supply = db.define('ps_supply', {
+    idSupply: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    IdCountryState: {
+    NameSupply: {
+        type: Sequelize.STRING,
+        required: true,
+        allowNull: false
+    },
+    IdUnitedMeasuredSupply: {
         type: Sequelize.INTEGER,
         required: true,
         allowNull: false
     },
-    NameState: {
+    DescriptionSupply: {
         type: Sequelize.STRING,
         required: true,
         allowNull: false
@@ -21,4 +27,4 @@ const State = db.define('ps_state', {
     freezeTableName: true
 })
 
-module.exports = State;
+module.exports = Supply;
