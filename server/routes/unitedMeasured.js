@@ -15,7 +15,7 @@ const UnitedMeasuredController = require('../../controllers/UnitedMeasuredContro
 routes.get('/UnitedMeasured/:id', async(req, res) => {
 
     try {
-        st = await UnitedMeasuredController.findOneUnitedMeasured(req.params.id);
+        st = await UnitedMeasuredController.findUnitedMeasuredById(req.params.id);
         res.send(st);
     } catch (err) {
         res.status(400).send(err);
@@ -32,7 +32,7 @@ routes.get('/UnitedMeasured/:id', async(req, res) => {
 routes.get('/UnitedMeasured/', async(req, res) => {
 
     try {
-        st = await UnitedMeasuredController.findAllUnitedMeasureds();
+        st = await UnitedMeasuredController.findAllUnitedMeasured();
     } finally {
         res.send(st);
     }
