@@ -1,82 +1,114 @@
 const Sequelize = require('sequelize');
-const PT = require('../models/ps_PoolType');
+const PT = require('../models/ps_pooltype');
 const server = require('../server/server');
-const { check, validationResult } = require('express-validator');
-const { validate } = require('../server/connection');
-const { INTEGER } = require('sequelize');
 
 
 module.exports = {
 
-    async validePool(NP, id, tipo) {
-        var errores = [];
-        if (tipo > 1) {
-            var x1 = await PT.count({ where: { 'idTypePool': id } });
-            if (x1 == 0)
-                errores.push('El ID No existe');
-        }
-        if (tipo == 1 || tipo == 2) {
-            if (tipo == 1) {
-                var x1 = await PT.count({ where: { 'idTypePool': NP.idTypePool } });
-                if (x1 > 0)
-                    errores.push('El ID ya existe');
-            }
-            if (NP.idTypePool == undefined) {
-                errores.push('El ID no puede ser nulo');
-            }
-            if (NP.NameTypePool == '' || NP.NameTypePool == undefined) {
-                errores.push('El Nombre no puede ser nulo');
-            }
-        }
-        const len = errores.length;
-        if (len > 0)
-            return errores;
-        else
-            return false;
-    },
+    async validePool(tipo, id, body) {
 
-    async findPoolTypeOne(id) {
-        const err = (await this.validePool({}, id, 5));
-        if (err) {
+        err = [];
+
+        if (tipo == 'find_one') {
+    
+            if (id == undefined) {
+                err.push('El ID del tipo de piscina no puede ser nulo.');
+            }
+            if (!(await this.existsIdPoolType(id))) {
+                err.push('El tipo de piscina no existe.');
+            }
             return err;
+    
+        } else if (tipo == 'find_all') {
+    
+            return err;
+    
+        } else if (tipo == 'create') {
+
+            if (body.idTypePool) {
+                if (await this.existsIdPoolType(body.idTypePool)) {
+                    err.push('El tipo de Piscina ya existe.');
+                }
+            }
+            if (body.NameTypePool == null || body.NameTypePool == "") {
+                err.push('El nombre no puede ser vacío.');
+            }
+            return err;
+    
+        } else if (tipo == 'update') {
+            if (id == undefined) {
+                err.push('El ID del tipo de Piscina no puede ser nulo.');
+            }
+            if (!(await this.existsIdPoolType(id))) {
+                err.push('El tipo de Piscina no existe.');
+            }
+            if (body.NameTypePool == null || body.NameTypePool == "") {
+                err.push('El nombre no puede ser vacío.');
+            }
+            return err;
+    
+        } else if (tipo == 'delete') {
+    
+            if (id == undefined) {
+                err.push('El ID del tipo de piscina no puede ser nulo.');
+            }
+            if (!(await this.existsIdPoolType(id))) {
+                err.push('El Id de la unidad de Medida No existe.');
+            }
+            return err;
+    
         }
-        const PoolType = await PT.findByPk(id);
-        return PoolType;
+    },
+    
+    async findOnePoolType(id) {
+        const err = await this.validePool('find_one', id, {});
+        if (err.length > 0) {
+            throw err;
+        }
+        const pt = await PT.findByPk(id);
+        return pt;
     },
 
     async findAllPoolType() {
-        const PoolType = await PT.findAll({ where: {} });
-        return PoolType;
+        const pt = await PT.findAll({ where: {} });
+        return pt;
     },
 
-    async CreatePoolType(NewPooltype) {
-        const err = await this.validePool(NewPooltype, 0, 1);
-        if (err) {
-            return err;
+    async createPoolType(body) {
+        const err = await this.validePool('create', {}, body);
+        if (err.length > 0) {
+            throw err;
         }
-        const PoolType = await PT.create(NewPooltype);
-        return PoolType;
+
+        const  pt = await PT.create(body);
+        return pt;
     },
 
-    async UpdatePoolType(body, id) {
-        const err = await this.validePool(body, id, 2);
-        if (err) {
-            return err;
+    async updatePoolType(id, body) {
+
+        const err = await this.validePool('update', id, body);
+        if (err.length > 0) {
+            throw err;
         }
-        if (body.idTypePool == '') {
-            body.idTypePool = id;
+
+        body.idTypePool = id;
+        const pt = await PT.update(body, { where: { idTypePool : id } });
+        if (pt[0] == 1) {
+            return true;
         }
-        const PoolType = await PT.update(body, { where: { idTypePool: id } });
-        return PoolType;
+
     },
 
-    async DeletePoolType(id) {
-        const err = await this.validePool({}, id, 3);
-        if (err) {
-            return err;
+    async deletePoolType(id) {
+        const err = await this.validePool('delete', id, {});
+        if (err.length > 0) {
+            throw err;
         }
-        const PoolType = await PT.destroy({ where: { idTypePool: id } });
-        return PoolType;
+
+        const pt = await PT.destroy({ where: { idTypePool: id } });
+        if (pt == 1) {
+            return true;
+        }
     },
 
     //  ===========================

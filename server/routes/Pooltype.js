@@ -32,7 +32,7 @@ routes.get('/PoolType/:id', async(req, res) => {
 routes.get('/PoolType/', async(req, res) => {
 
     try {
-        st = await PoolTypeController.findAllPoolTypes();
+        st = await PoolTypeController.findAllPoolType();
     } finally {
         res.send(st);
     }
@@ -72,6 +72,7 @@ routes.post('/PoolType/', async(req, res) => {
 routes.put('/PoolType/:id', async(req, res) => {
 
     try {
+        console.log(req.body)
         st = await PoolTypeController.updatePoolType(req.params.id, req.body);
         res.send(st);
     } catch (err) {

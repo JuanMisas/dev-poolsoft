@@ -70,7 +70,7 @@ module.exports = {
     },
 
     /* Método que encuentra a todos los registros de UnitedMeasured. */
-    /* Devuelve un array de objetos json de tipo Role. */
+    /* Devuelve un array de objetos json  */
     async findAllUnitedMeasured() {
         const unitedMeasured = await UnitedMeasured.findAll({ where: {} });
         return unitedMeasured;
@@ -96,7 +96,7 @@ module.exports = {
 
         body.idUnitedMeasured = id;
         const unitedMeasured = await UnitedMeasured.update(body, { where: { idUnitedMeasured: id } });
-        if (UnitedMeasured[0] == 1) {
+        if (unitedMeasured[0] == 1) {
             return true;
         }
 
