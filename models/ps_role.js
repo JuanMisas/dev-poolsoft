@@ -13,6 +13,8 @@ const Role = db.define('ps_role', {
         required: true, 
         allowNull: false
     }
+}, {
+    freezeTableName: true
 })
 
 module.exports = Role;

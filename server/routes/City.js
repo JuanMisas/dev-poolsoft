@@ -2,6 +2,8 @@ const routes = require('express').Router();
 
 const City = require('../../models/ps_city');
 const CityController = require('../../controllers/CityController');
+const { route } = require('./Login');
+const { count } = require('../../models/ps_city');
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
@@ -37,6 +39,14 @@ routes.get('/City/', async(req, res) => {
         res.send(st);
     }
 
+});
+
+routes.get('/CityAll/', async(req, res) => {
+    try {
+        st = await CityController.findAllCityStateCountry();
+    } finally {
+        res.send(st);
+    }
 });
 
 

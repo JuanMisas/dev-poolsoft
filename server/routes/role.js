@@ -1,7 +1,6 @@
 const routes = require('express').Router();
-
 const Role = require('../../models/ps_role');
-const RoleController = require('../../controllers/RoleController');
+const RoleController = require('../../controllers/roleController');
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
@@ -15,7 +14,7 @@ const RoleController = require('../../controllers/RoleController');
 routes.get('/Role/:id', async(req, res) => {
 
     try {
-        st = await RoleController.findOneRole(req.params.id);
+        st = await RoleController.findRoleById(req.params.id);
         res.send(st);
     } catch (err) {
         res.status(400).send(err);
@@ -32,7 +31,7 @@ routes.get('/Role/:id', async(req, res) => {
 routes.get('/Role/', async(req, res) => {
 
     try {
-        st = await RoleController.findAllRoles();
+        st = await RoleController.findAllRole();
     } finally {
         res.send(st);
     }

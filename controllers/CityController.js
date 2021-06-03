@@ -1,9 +1,12 @@
 const Sequelize = require('sequelize');
-const CITY = require('../models/ps_city');
 const server = require('../server/server');
 const { validate } = require('../server/connection');
 const { INTEGER } = require('sequelize');
 const StateController = require('./stateController.js');
+const CITY = require('../models/ps_city');
+const { QueryTypes } = require('sequelize');
+const { sequelize } = require('../models/ps_country');
+
 
 
 module.exports = {
@@ -99,8 +102,8 @@ module.exports = {
             throw err;
         }
 
-        const City = await CITY.findByPk(id);
-        return City;
+        const city = await CITY.findByPk(id);
+        return city;
     },
 
     /**
@@ -113,8 +116,16 @@ module.exports = {
         //     throw err;
         // }
 
-        const City = await CITY.findAll({ where: {} });
-        return City;
+        const city = await CITY.findAll({ where: {} });
+        return city;
+    },
+
+    async findAllCityStateCountry () {
+        const cityall = await sequelize.query(
+            "select a.IdCity, a.NameCity , b.IdState, b.NameState, c.IdCountry, c.NameCountry from ps_city a inner join ps_state b on a.IdStateCity = b.IdState inner join ps_country c on b.IdCountryState = c.IdCountry",
+            { raw : true, 
+            type : QueryTypes.SELECT});
+        return cityall;
     },
 
     /**
@@ -122,14 +133,15 @@ module.exports = {
      * @param {body} body 
      * @returns Objeto City o array de errores
      */
+
     async createCity(body) {
         const err = await this.validateCity('create', {}, body);
         if (err.length > 0) {
             throw err;
         }
 
-        const City = await CITY.create(body);
-        return City;
+        const city = await CITY.create(body);
+        return city;
     },
 
     /**
@@ -145,8 +157,8 @@ module.exports = {
         }
 
         body.IdCity = id;
-        const City = await CITY.update(body, { where: { IdCity: id } });
-        if (City[0] == 1) {
+        const city = await CITY.update(body, { where: { IdCity: id } });
+        if (city[0] == 1) {
             return true;
         }
     },
@@ -162,8 +174,8 @@ module.exports = {
             throw err;
         }
 
-        const City = await CITY.destroy({ where: { IdCity: id } });
-        if (City == 1) {
+        const city = await CITY.destroy({ where: { IdCity: id } });
+        if (city == 1) {
             return true;
         }
     },

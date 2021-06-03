@@ -4,69 +4,64 @@ const server = require('../server/server');
 
 module.exports = {
 
-    async validateRole(body, id, tipo) {
-        var errores = [];
-        if (tipo == 1) {
-            if (body.idRole == '' || body.idRole == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
-                var x1 = await Role.count({ where: { 'idRole': body.idRole } });
-                if (x1 > 0)
-                    errores.push('El ID ya existe');
+    async validateRole(tipo, id, body) {
+        err = [];
+        if (tipo == 'find_one') {
+    
+            if (id == undefined) {
+                err.push('El ID del rol no puede ser nulo.');
             }
-            if (body.RoleName == '' || body.RoleName == undefined)
-                errores.push('El Nombre no puede ser nulo');
-        }
-        if (tipo == 2) {
-            if (id == '' || id == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
-                var x1 = await Role.count({ where: { 'idRole': id } });
-                if (x1 == 0)
-                    errores.push('El ID No existe');
+            if (!(await this.existsIdRole(id))) {
+                err.push('El rol no existe.');
             }
-        }
-        if (tipo == 3) {
-            if (id == '' || id == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
-                var x1 = await Role.count({ where: { 'idRole': id } });
-                if (x1 == 0)
-                    errores.push('El ID No existe');
+            return err;
+
+        } else if (tipo == 'find_all') {
+            return err;
+  
+        } else if (tipo == 'create') {
+            if (body.idRole) {
+                if (await this.existsIdRole(body.idRole)) {
+                    err.push('El rol ya existe.');
+                }
             }
-            if (body.RoleName == '' || body.RoleName == undefined)
-                errores.push('El Nombre no puede ser nulo');
-        }
-        if (tipo == 4) {
-            if (id == '' || id == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
-                var x1 = await Role.count({ where: { 'idRole': id } });
-                if (x1 == 0)
-                    errores.push('El ID No existe');
+            if (body.RoleName == null || body.RoleName == "") {
+                err.push('El nombre no puede ser vacío.');
             }
+            return err;
+    
+        } else if (tipo == 'update') {
+            if (id == undefined) {
+                err.push('El ID del rol no puede ser nulo.');
+            }
+            if (!(await this.existsIdRole(id))) {
+                err.push('El rol no existe.');
+            }
+            if (body.RoleName == null || body.RoleName == "") {
+                err.push('El nombre no puede ser vacío.');
+            }
+            return err;
+    
+        } else if (tipo == 'delete') {
+    
+            if (id == undefined) {
+                err.push('El ID del rol no puede ser nulo.');
+            }
+            if (!(await this.existsIdRole(id))) {
+                err.push('El Id del rol No existe.');
+            }
+            return err;
+    
         }
-        const len = errores.length;
-        if (len > 0)
-            return errores;
-        else
-            return false;
     },
 
-    /* Método que crea un Rol dados el RoleName */
-    async createRole(body) {
-        const err = await this.validateRole(body, 0, 1);
-        if (err)
-            return err;
-        await Role.create(body);
-    },
 
     /* Método que encuentra a un rol por el idRole. */
     /* Devuelve un objeto json de tipo Role. */
     async findRoleById(id) {
-        const err = await this.validateRole(0, id, 2);
-        if (err)
-            return err;
+        const err = await this.validateRole('find_one', id, {});
+        if (err.length > 0 )
+            throw err;
         const role = await Role.findByPk(id);
         return role;
     },
@@ -79,35 +74,35 @@ module.exports = {
     },
 
     /* Actualizar datos de un rol dado el idRole */
-    async updateRole(body, id) {
-        const err = await this.validateRole(body, id, 3);
-        if (err)
-            return err;
-        role = await Role.findByPk(id);
-        if (role != null) {
-            await Role.update({
-                RoleName: body.RoleName
-            }, {
-                where: { idRole: id }
-            }).catch(function() {
-                console.log("Promise Rejected");
-            });
+    async updateRole(id, body) {
+        const err = await this.validateRole('update', id, body);
+        if (err.length > 0)
+            throw err;
+
+        body.idRole = id;
+        const role = await Role.update(body, { where: { idRole : id } });
+        if (role[0] == 1) {
+            return true;
         }
     },
 
+    /* Método que crea un Rol dados el RoleName */
+    async createRole(body) {
+        const err = await this.validateRole('create', 0, body);
+        if (err.length > 0)
+            throw err;
+        const role = await Role.create(body);
+        return role;
+    },
+    
     /* Método que elimina un rol dado el idRole */
     async deleteRole(id) {
-        const err = await this.validateRole(0, id, 4);
-        if (err)
+        const err = await this.validateRole('delete', id, {});
+        if (err.length > 0)
             return err;
-        await Role.destroy({ where: { idRole: id } });
-    },
-
-    /* Método que encuentra a un role por el rolename. */
-    /* Devuelve un objeto json de tipo Role. */
-    async findRole(roleName) {
-        const role = await Role.findOne({ where: { RoleName: roleName } });
-        return role;
+        const role = await Role.destroy({ where: { idRole: id } });
+        if (role == 1)
+            return true;
     },
 
     //  ===========================
