@@ -120,11 +120,12 @@ module.exports = {
         return city;
     },
 
-    async findAllCityStateCountry () {
+    async findAllCityStateCountry() {
         const cityall = await sequelize.query(
-            "select a.IdCity, a.NameCity , b.IdState, b.NameState, c.IdCountry, c.NameCountry from ps_city a inner join ps_state b on a.IdStateCity = b.IdState inner join ps_country c on b.IdCountryState = c.IdCountry",
-            { raw : true, 
-            type : QueryTypes.SELECT});
+            "select a.IdCity, a.NameCity , b.IdState, b.NameState, c.IdCountry, c.NameCountry from ps_city a inner join ps_state b on a.IdStateCity = b.IdState inner join ps_country c on b.IdCountryState = c.IdCountry order by IdCity", {
+                raw: true,
+                type: QueryTypes.SELECT
+            });
         return cityall;
     },
 

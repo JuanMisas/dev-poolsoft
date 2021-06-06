@@ -40,6 +40,31 @@ routes.get('/State/', async(req, res) => {
 });
 
 
+routes.get('/AllStateCountry/', async(req, res) => {
+
+    try {
+        st = await StateController.findAllStateCountry();
+        res.send(st);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+
+});
+
+
+routes.get('/StateCountry/:id', async(req, res) => {
+
+    try {
+        st = await StateController.findStateCountry(req.params.id);
+        res.send(st);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+
+});
+
+
+
 /**
  * ==== RETURN SI NO HAY ERROR ====
  * Objeto json de tipo State

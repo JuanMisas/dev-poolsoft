@@ -4,7 +4,8 @@ const server = require('../server/server');
 const { validate } = require('../server/connection');
 const { INTEGER } = require('sequelize');
 const CountryController = require('./countryController.js');
-
+const { QueryTypes } = require('sequelize');
+const { sequelize } = require('../models/ps_state');
 
 module.exports = {
 
@@ -28,6 +29,22 @@ module.exports = {
             return err;
 
         } else if (tipo == 'find_all') {
+
+            return err;
+
+        } else if (tipo == 'find_all_state_country') {
+
+            if (!(await this.existsAllStateCountry())) {
+                err.push('No hay estados.');
+            }
+
+            return err;
+
+        } else if (tipo == 'find_state_country') {
+
+            if (!(await this.existsStateCountry(id))) {
+                err.push('Este país no tiene estados.');
+            }
 
             return err;
 
@@ -117,6 +134,34 @@ module.exports = {
         return State;
     },
 
+    async findAllStateCountry() {
+        const err = await this.validateState('find_all_state_country', {}, {});
+        if (err.length > 0) {
+            throw err;
+        }
+
+        const State = await sequelize.query(
+            "select a.IdState, a.NameState, b.IdCountry, b.NameCountry from ps_state a inner join ps_country b on a.IdCountryState = b.IdCountry order by IdState", {
+                raw: true,
+                type: QueryTypes.SELECT
+            });
+        return State;
+    },
+
+    async findStateCountry(id) {
+        const err = await this.validateState('find_state_country', id, {});
+        if (err.length > 0) {
+            throw err;
+        }
+
+        const State = await sequelize.query(
+            "select * from ps_state where IdCountryState = " + id + " order by IdState", {
+                raw: true,
+                type: QueryTypes.SELECT
+            });
+        return State;
+    },
+
     /**
      * 
      * @param {body} body 
@@ -181,6 +226,36 @@ module.exports = {
             return false;
         } else {
             return true;
+        }
+    },
+
+    /** Devuelve true si encuentra al menos uno, sino devuelve false */
+    async existsStateCountry(id) {
+        states = await sequelize.query(
+            "select * from ps_state where IdCountryState = " + id, {
+                raw: true,
+                type: QueryTypes.SELECT
+            });
+
+        if (states.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    },
+
+    /** Devuelve true si encuentra al menos uno, sino devuelve false */
+    async existsAllStateCountry() {
+        states = await sequelize.query(
+            "select a.IdState, a.NameState, b.IdCountry, b.NameCountry from ps_state a inner join ps_country b on a.IdCountryState = b.IdCountry", {
+                raw: true,
+                type: QueryTypes.SELECT
+            });
+
+        if (states.length > 0) {
+            return true;
+        } else {
+            return false;
         }
     }
 
