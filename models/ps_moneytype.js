@@ -12,6 +12,11 @@ const MoneyType = db.define('ps_typemoney', {
         type: Sequelize.STRING, 
         required: true, 
         allowNull: false
+    },
+    AdvTypeMoney: {
+        type: Sequelize.STRING, 
+        required: false, 
+        allowNull: true
     }
 }, {
     freezeTableName: true
