@@ -13,6 +13,11 @@ routes.get('/Supplies/', async (req, res) => {
     res.json(pt);
 });
 
+routes.get('/SuppliesAll/', async (req, res) => {
+    pt = await SuppliesController.findAllSupliesUnd();
+    res.json(pt);
+});
+
 routes.post('/Supplies/', async (req, res) => {
     pt = await SuppliesController.createSupply(req.body);
     res.json(pt); 

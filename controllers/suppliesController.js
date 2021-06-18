@@ -1,7 +1,9 @@
 const Sequelize = require('sequelize');
 const Supplies = require('../models/ps_supplies');
 const UnitedMeasured = require('../controllers/unitedMeasuredController');
+const { QueryTypes } = require('sequelize');
 const server = require('../server/server');
+const { sequelize } = require('../models/ps_supplies')
 
 module.exports = {
 
@@ -81,6 +83,16 @@ module.exports = {
     async findAllSupply() {
         const supplies = await Supplies.findAll({where : {}});
         return supplies;
+    },
+
+    async findAllSupliesUnd() {
+        const supliesAll = await sequelize.query(
+            "select idSupplies, NameSupplies, IdUnitedMeasuredSupplies, NameUnitedMeasured from ps_supplies a inner join ps_unitedmeasured b on a.IdUnitedMeasuredSupplies = b.idUnitedMeasured", 
+            {
+                raw: true,
+                type: QueryTypes.SELECT
+            });
+        return supliesAll;
     },
 
 /* Método que crea un insumo dados el NameSupply, IdUnitedMeasuredSupply y DescriptionSupply */
