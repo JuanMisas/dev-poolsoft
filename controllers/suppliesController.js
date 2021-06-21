@@ -108,7 +108,7 @@ module.exports = {
     },
     async findAllSupliesUnd() {
         const supliesAll = await sequelize.query(
-            "select idSupplies, NameSupplies, IdUnitedMeasuredSupplies, NameUnitedMeasured from ps_supplies a inner join ps_unitedmeasured b on a.IdUnitedMeasuredSupplies = b.idUnitedMeasured", 
+            "select idSupplies, NameSupplies, IdUnitedMeasuredSupplies, NameUnitedMeasured, DescriptionSupplies from ps_supplies a inner join ps_unitedmeasured b on a.IdUnitedMeasuredSupplies = b.idUnitedMeasured", 
             {
                 raw: true,
                 type: QueryTypes.SELECT
