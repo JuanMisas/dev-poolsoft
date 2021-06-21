@@ -40,6 +40,14 @@ module.exports = {
             }
             return err;
     
+        } else if (tipo == 'find_suply_und') {
+
+            if (!(await this.existsSuplyUnd(id))) {
+                err.push('La unidad no tiene este Insumo.');
+            }
+
+            return err;
+
         } else if (tipo == 'update') {
             if (id == undefined) {
                 err.push('El ID del producto no puede ser nulo.');
@@ -85,6 +93,19 @@ module.exports = {
         return supplies;
     },
 
+    async findSuplyUnd(id) {
+        const err = await this.validateState('find_suply_und', id, {});
+        if (err.length > 0) {
+            throw err;
+        }
+
+        const State = await sequelize.query(
+            "select * from ps_state where IdCountryState = " + id + " order by IdState", {
+                raw: true,
+                type: QueryTypes.SELECT
+            });
+        return State;
+    },
     async findAllSupliesUnd() {
         const supliesAll = await sequelize.query(
             "select idSupplies, NameSupplies, IdUnitedMeasuredSupplies, NameUnitedMeasured from ps_supplies a inner join ps_unitedmeasured b on a.IdUnitedMeasuredSupplies = b.idUnitedMeasured", 
@@ -141,6 +162,36 @@ module.exports = {
        } else {
            return true;
        }
-   }
+   },
+
+   async existsSuplyUnd(id) {
+    states = await sequelize.query(
+        "select * from ps_supplies where IdUnitedMeasuredSupplies = " + id, {
+            raw: true,
+            type: QueryTypes.SELECT
+        });
+
+    if (states.length > 0) {
+        return true;
+    } else {
+        return false;
+    }
+},
+
+/** Devuelve true si encuentra al menos uno, sino devuelve false */
+async existsAllSSupliesUnd() {
+    states = await sequelize.query(
+        "select *  from ps_supplies a inner join ps_unitedmeasured b on a.IdUnitedMeasuredSupplies = b.idUnitedMeasured", {
+            raw: true,
+            type: QueryTypes.SELECT
+        });
+
+    if (states.length > 0) {
+        return true;
+        } else {
+        return false;
+    }
+}   
+
 
 };
