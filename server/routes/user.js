@@ -1,8 +1,7 @@
-const express = require('express');
-const app = express();
-const UserController = require('../../controllers/UserController');
-var routes = express.Router();
-var db = require('../connection.js')
+const routes = require('express').Router();
+const UserController = require('../../controllers/userController');
+const User = require('../../models/ps_user');
+
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
@@ -16,12 +15,11 @@ var db = require('../connection.js')
 routes.get('/User/:id', async(req, res) => {
 
     try {
-        st = await UserController.findOneUser(req.params.id);
+        st = await UserController.findUserById(req.params.id);
         res.send(st);
     } catch (err) {
         res.status(400).send(err);
     }
-
 });
 
 
@@ -33,7 +31,7 @@ routes.get('/User/:id', async(req, res) => {
 routes.get('/User/', async(req, res) => {
 
     try {
-        st = await UserController.findAllUsers();
+        st = await UserController.findAllUser();
     } finally {
         res.send(st);
     }

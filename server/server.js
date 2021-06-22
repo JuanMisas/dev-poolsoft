@@ -3,7 +3,7 @@ const path = require('path')
 const PORT = process.env.PORT || 5000
 
 var routesLogin = require('./routes/Login.js')
-var routesUser = require('./routes/User.js')
+var routesUser = require('./routes/user.js')
 var routesPoolType = require('./routes/PoolType.js')
 var routesFilterType = require('./routes/FilterType.js')
 var routesPayType = require('./routes/PayType.js')

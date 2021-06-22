@@ -1,98 +1,96 @@
 const Sequelize = require('sequelize');
 const User = require('../models/ps_user');
-const Role = require('../models/ps_role');
+const Role = require('../controllers/roleController');
+const { QueryTypes } = require('sequelize');
 const server = require('../server/server');
+const { sequelize } = require('../models/ps_user')
+
 
 module.exports = {
 
-    async validateUser(body, id, tipo) {
-        var errores = [];
-        isRole = false;
-        if (tipo == 1) {
-            if (body.idUser == '' || body.idUser == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
-                var x1 = await User.count({ where: { 'idUser': body.idUser } });
-                if (x1 > 0)
-                    errores.push('El ID ya existe');
+    async validateUser(tipo, id, body) {
+
+        err = [];
+
+        if (tipo == 'find_one') {
+    
+            if (id == undefined) {
+                err.push('El ID del usuario no puede ser nulo.');
             }
-            if (body.NameUser == '' || body.NameUser == undefined)
-                errores.push('El Nombre no puede ser nulo');
-            if (body.PasswordUser == '' || body.PasswordUser == undefined)
-                errores.push('La contraseña no puede ser nula');
-            if (body.PasswordUser.length < 8)
-                errores.push('La contraseña debe tener al menos 8 caracteres');
-            if (body.RoleUser == '' || body.RoleUser == undefined)
-                errores.push('El Rol no puede ser nulo');
-            isRole = true;
-            if (isRole) {
-                var x1 = await Role.count({ where: { 'idRole': body.RoleUser } });
-                if (x1 == 0)
-                    errores.push('El rol no existe');
+            if (!(await this.existsIdUser(id))) {
+                err.push('El Usuario no existe.');
             }
+            return err;
+    
+        } else if (tipo == 'find_all') {
+    
+            return err;
+    
+        } else if (tipo == 'create') {
+            if (body.idUser) {
+                if (await this.existsIdUser(body.idUser)) {
+                    err.push('El Usuario ya existe.');
+                }
+            }
+            if (body.NameUser == null || body.NameUser == "") {
+                err.push('El nombre no puede ser vacío.');
+            }
+            if (body.PasswordUser == null || body.PasswordUser == "") {
+                err.push('El Password no puede ser vacío.');
+            }
+
+            if (!await Role.existsIdRole(body.RoleUser)){
+                err.push('El Role no existe');
+            }
+            return err;
+    
+        } else if (tipo == 'update') {
+            if (id == undefined) {
+                err.push('El ID del usuario no puede ser nulo.');
+            }
+            if (!(await this.existsIdUser(id))) {
+                err.push('El Usuario no existe.');
+            }
+            if (body.NameUser == null || body.NameUser == "") {
+                err.push('El nombre no puede ser vacío.');
+            }
+            if (body.PasswordUser == null || body.PasswordUser == "") {
+                err.push('El Password no puede ser vacío.');
+            }
+            if (!(await Role.existsIdRole(body.RoleUser))) {
+                err.push('El Role no existe.');
+            }
+            console.log('Fin de valide')
+            return err;
+    
+        } else if (tipo == 'delete') {
+    
+            if (id == undefined) {
+                err.push('El ID del Usuario no puede ser nulo.');
+            }
+            if (!(await this.existsIdUser(id))) {
+                err.push('El Id del Usurio No existe.');
+            }
+            return err;
+    
         }
-        if (tipo == 2) {
-            if (id == '' || id == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
-                var x1 = await User.count({ where: { 'idUser': id } });
-                if (x1 == 0)
-                    errores.push('El ID No existe');
-            }
-        }
-        if (tipo == 3) {
-            if (id == '' || id == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
-                var x1 = await User.count({ where: { 'idUser': id } });
-                if (x1 == 0)
-                    errores.push('El ID No existe');
-            }
-            if (body.NameUser == '' || body.NameUser == undefined)
-                errores.push('El Nombre no puede ser nulo');
-            if (body.PasswordUser == '' || body.PasswordUser == undefined)
-                errores.push('La contraseña no puede ser nula');
-            if (body.PasswordUser.length < 8)
-                errores.push('La contraseña debe tener al menos 8 caracteres');
-            if (body.RoleUser == '' || body.RoleUser == undefined)
-                errores.push('El Rol no puede ser nulo');
-            isRole = true;
-            if (isRole) {
-                var x1 = await Role.count({ where: { 'idRole': body.RoleUser } });
-                if (x1 == 0)
-                    errores.push('El rol no existe');
-            }
-        }
-        if (tipo == 4) {
-            if (id == '' || id == undefined)
-                errores.push('El ID no puede ser nulo');
-            if (errores.length == 0) {
-                var x1 = await User.count({ where: { 'idUser': id } });
-                if (x1 == 0)
-                    errores.push('El ID No existe');
-            }
-        }
-        const len = errores.length;
-        if (len > 0)
-            return errores;
-        else
-            return false;
     },
 
     /* Método que crea un usuario dados el NameUser, PasswordUser, RoleUser */
     async createUser(body) {
-        const err = await this.validateUser(body, 0, 1);
-        if (err)
-            return err;
-        await User.create(body);
+        const err = await this.validateUser('create', 0, body);
+        if (err.length > 0)
+            throw err;
+        const user = await User.create(body);
+        return user;
     },
 
     /* Método que encuentra a un usuario por el idUser. */
     /* Devuelve un objeto json de tipo User. */
     async findUserById(id) {
-        const err = await this.validateUser(0, id, 2);
-        if (err)
-            return err;
+        const err = await this.validateUser('find_one', id, {});
+        if (err.length > 0 )
+            throw err;
         const user = await User.findByPk(id);
         return user;
     },
@@ -105,30 +103,27 @@ module.exports = {
     },
 
     /* Actualizar datos de un usuario dado el idUser */
-    async updateUser(body, id) {
-        const err = await this.validateUser(body, id, 3);
-        if (err)
-            return err;
-        user = await User.findByPk(id);
-        if (user != null) {
-            await User.update({
-                NameUser: body.NameUser,
-                PasswordUser: body.PasswordUser,
-                RoleUser: body.RoleUser
-            }, {
-                where: { idUser: id }
-            }).catch(function() {
-                console.log("Promise Rejected");
-            });
+    async updateUser(id, body) {
+        const err = await this.validateUser('update', id, body);
+        console.log(err.length)
+        if (err.length > 0)
+            throw err;
+        console.log(body)
+        body.idUser = id;
+        const user = await User.update(body, { where: { idUser: id } });
+        if (user[0] == 1) {
+            return true;
         }
     },
 
     /* Método que elimina un usuario dado el idUser */
     async deleteUser(id) {
-        const err = await this.validateUser(0, id, 4);
-        if (err)
+        const err = await this.validateUser('delete', id, {});
+        if (err.length > 0)
             return err;
-        await User.destroy({ where: { idUser: id } });
+        const user = await User.destroy({ where: { idUser: id } });
+        if (user == 1)
+            return true;
     },
 
     /* Método que encuentra a un usuario por el username y el password. */
