@@ -134,6 +134,16 @@ module.exports = {
         } else {
             return true;
         }
+    },
+
+    async findAllUsersRole() {
+        const usersAll = await sequelize.query(
+            "select a.NameUser, a.PasswordUser, b.idRole, b.RoleName from ps_user a inner join ps_role b on a.RoleUser = b.idRole", 
+            {
+                raw: true,
+                type: QueryTypes.SELECT
+            });
+        return usersAll;
     }
 
 };

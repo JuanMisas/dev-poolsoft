@@ -40,6 +40,16 @@ routes.get('/User/', verifyToken, async(req, res) => {
 });
 
 
+routes.get('/UserAll/', verifyToken, async(req, res) => {
+
+    try {
+        st = await UserController.findAllUsersRole();
+        res.send(st);
+    } catch (err) {
+        res.status(400).send(err);
+    }
+});
+
 /**
  * ==== RETURN SI NO HAY ERROR ====
  * Objeto json de tipo User
