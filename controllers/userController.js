@@ -8,47 +8,43 @@ const { sequelize } = require('../models/ps_user')
 
 module.exports = {
 
-    async validateUser(tipo, id, body) {
+    async validateUser(tipo, name, body) {
 
         err = [];
 
         if (tipo == 'find_one') {
-    
-            if (id == undefined) {
-                err.push('El ID del usuario no puede ser nulo.');
+
+            if (name == undefined || body.NameUser == "") {
+                err.push('El nombre de usuario no puede ser nulo.');
             }
-            if (!(await this.existsIdUser(id))) {
+            if (!(await this.existsNameUser(name))) {
                 err.push('El Usuario no existe.');
             }
             return err;
-    
+
         } else if (tipo == 'find_all') {
-    
+
             return err;
-    
+
         } else if (tipo == 'create') {
-            if (body.idUser) {
-                if (await this.existsIdUser(body.idUser)) {
-                    err.push('El Usuario ya existe.');
-                }
-            }
+
             if (body.NameUser == null || body.NameUser == "") {
-                err.push('El nombre no puede ser vacío.');
+                err.push('El nombre de usuario no puede ser vacío.');
+            }
+            if (await this.existsNameUser(body.NameUser)) {
+                err.push('El nombre de usuario ya existe.');
             }
             if (body.PasswordUser == null || body.PasswordUser == "") {
                 err.push('El Password no puede ser vacío.');
             }
-
-            if (!await Role.existsIdRole(body.RoleUser)){
+            if (!await Role.existsIdRole(body.RoleUser)) {
                 err.push('El Role no existe');
             }
             return err;
-    
+
         } else if (tipo == 'update') {
-            if (id == undefined) {
-                err.push('El ID del usuario no puede ser nulo.');
-            }
-            if (!(await this.existsIdUser(id))) {
+
+            if (!(await this.existsNameUser(name))) {
                 err.push('El Usuario no existe.');
             }
             if (body.NameUser == null || body.NameUser == "") {
@@ -62,17 +58,17 @@ module.exports = {
             }
             console.log('Fin de valide')
             return err;
-    
+
         } else if (tipo == 'delete') {
-    
-            if (id == undefined) {
-                err.push('El ID del Usuario no puede ser nulo.');
+
+            if (name == null || name == "") {
+                err.push('El nombre no puede ser vacío.');
             }
-            if (!(await this.existsIdUser(id))) {
-                err.push('El Id del Usurio No existe.');
+            if (!(await this.existsNameUser(name))) {
+                err.push('El Usuario no existe.');
             }
             return err;
-    
+
         }
     },
 
@@ -87,11 +83,11 @@ module.exports = {
 
     /* Método que encuentra a un usuario por el idUser. */
     /* Devuelve un objeto json de tipo User. */
-    async findUserById(id) {
-        const err = await this.validateUser('find_one', id, {});
-        if (err.length > 0 )
+    async findUserById(name) {
+        const err = await this.validateUser('find_one', name, {});
+        if (err.length > 0)
             throw err;
-        const user = await User.findByPk(id);
+        const user = await User.findByPk(name);
         return user;
     },
 
@@ -103,34 +99,25 @@ module.exports = {
     },
 
     /* Actualizar datos de un usuario dado el idUser */
-    async updateUser(id, body) {
-        const err = await this.validateUser('update', id, body);
-        console.log(err.length)
+    async updateUser(name, body) {
+        const err = await this.validateUser('update', name, body);
         if (err.length > 0)
             throw err;
-        console.log(body)
-        body.idUser = id;
-        const user = await User.update(body, { where: { idUser: id } });
+
+        const user = await User.update(body, { where: { NameUser: name } });
         if (user[0] == 1) {
             return true;
         }
     },
 
     /* Método que elimina un usuario dado el idUser */
-    async deleteUser(id) {
-        const err = await this.validateUser('delete', id, {});
+    async deleteUser(name) {
+        const err = await this.validateUser('delete', name, {});
         if (err.length > 0)
-            return err;
-        const user = await User.destroy({ where: { idUser: id } });
+            throw err;
+        const user = await User.destroy({ where: { NameUser: name } });
         if (user == 1)
             return true;
-    },
-
-    /* Método que encuentra a un usuario por el username y el password. */
-    /* Devuelve un objeto json de tipo User. */
-    async findUser(username, password) {
-        const user = await User.findOne({ where: { NameUser: username, PasswordUser: password } });
-        return user;
     },
 
     //  ===========================
@@ -138,8 +125,8 @@ module.exports = {
     //  ===========================
 
     /** Devuelve true si lo encuentra, sino devuelve false */
-    async existsIdUser(id) {
-        aux = await User.findByPk(id).catch(function() {
+    async existsNameUser(name) {
+        aux = await User.findByPk(name).catch(function() {
             console.log("Promise Rejected");
         });
         if (aux == null) {

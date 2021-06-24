@@ -2,6 +2,7 @@ const routes = require('express').Router();
 
 const UnitedMeasured = require('../../models/ps_unitedmeasured');
 const UnitedMeasuredController = require('../../controllers/UnitedMeasuredController');
+const { verifyToken } = require('../../controllers/AuthController');
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
@@ -12,7 +13,7 @@ const UnitedMeasuredController = require('../../controllers/UnitedMeasuredContro
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.get('/UnitedMeasured/:id', async(req, res) => {
+routes.get('/UnitedMeasured/:id', verifyToken, async(req, res) => {
 
     try {
         st = await UnitedMeasuredController.findUnitedMeasuredById(req.params.id);
@@ -29,7 +30,7 @@ routes.get('/UnitedMeasured/:id', async(req, res) => {
  * Array de objetos json de tipo UnitedMeasured
  * [ { atributo1: value1, atributo2: value2 }, { atributo1: value1, atributo2: value2 } ]
  */
-routes.get('/UnitedMeasured/', async(req, res) => {
+routes.get('/UnitedMeasured/', verifyToken, async(req, res) => {
 
     try {
         st = await UnitedMeasuredController.findAllUnitedMeasured();
@@ -49,7 +50,7 @@ routes.get('/UnitedMeasured/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.post('/UnitedMeasured/', async(req, res) => {
+routes.post('/UnitedMeasured/', verifyToken, async(req, res) => {
 
     try {
         st = await UnitedMeasuredController.createUnitedMeasured(req.body);
@@ -69,7 +70,7 @@ routes.post('/UnitedMeasured/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.put('/UnitedMeasured/:id', async(req, res) => {
+routes.put('/UnitedMeasured/:id', verifyToken, async(req, res) => {
 
     try {
         st = await UnitedMeasuredController.updateUnitedMeasured(req.params.id, req.body);
@@ -89,7 +90,7 @@ routes.put('/UnitedMeasured/:id', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.delete('/UnitedMeasured/:id', async(req, res) => {
+routes.delete('/UnitedMeasured/:id', verifyToken, async(req, res) => {
 
     try {
         st = await UnitedMeasuredController.deleteUnitedMeasured(req.params.id);

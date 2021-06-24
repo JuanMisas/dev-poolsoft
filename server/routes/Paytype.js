@@ -2,6 +2,7 @@ const routes = require('express').Router();
 
 const PayType = require('../../models/ps_paytype');
 const PayTypeController = require('../../controllers/payTypeController');
+const { verifyToken } = require('../../controllers/AuthController');
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
@@ -12,7 +13,7 @@ const PayTypeController = require('../../controllers/payTypeController');
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.get('/PayType/:id', async(req, res) => {
+routes.get('/PayType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await PayTypeController.findOnePayType(req.params.id);
@@ -29,7 +30,7 @@ routes.get('/PayType/:id', async(req, res) => {
  * Array de objetos json de tipo PayType
  * [ { atributo1: value1, atributo2: value2 }, { atributo1: value1, atributo2: value2 } ]
  */
-routes.get('/PayType/', async(req, res) => {
+routes.get('/PayType/', verifyToken, async(req, res) => {
 
     try {
         st = await PayTypeController.findAllPayTypes();
@@ -49,7 +50,7 @@ routes.get('/PayType/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.post('/PayType/', async(req, res) => {
+routes.post('/PayType/', verifyToken, async(req, res) => {
 
     try {
         st = await PayTypeController.createPayType(req.body);
@@ -69,7 +70,7 @@ routes.post('/PayType/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.put('/PayType/:id', async(req, res) => {
+routes.put('/PayType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await PayTypeController.updatePayType(req.params.id, req.body);
@@ -89,7 +90,7 @@ routes.put('/PayType/:id', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.delete('/PayType/:id', async(req, res) => {
+routes.delete('/PayType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await PayTypeController.deletePayType(req.params.id);

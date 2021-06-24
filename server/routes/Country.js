@@ -2,6 +2,7 @@ const routes = require('express').Router();
 
 const Country = require('../../models/ps_country');
 const CountryController = require('../../controllers/countryController');
+const { verifyToken } = require('../../controllers/AuthController');
 
 
 /**
@@ -13,7 +14,7 @@ const CountryController = require('../../controllers/countryController');
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.get('/Country/:id', async(req, res) => {
+routes.get('/Country/:id', verifyToken, async(req, res) => {
 
     try {
         st = await CountryController.findOneCountry(req.params.id);
@@ -30,7 +31,7 @@ routes.get('/Country/:id', async(req, res) => {
  * Array de objetos json de tipo Country
  * [ { atributo1: value1, atributo2: value2 }, { atributo1: value1, atributo2: value2 } ]
  */
-routes.get('/Country/', async(req, res) => {
+routes.get('/Country/', verifyToken, async(req, res) => {
 
     try {
         st = await CountryController.findAllCountries();
@@ -50,7 +51,7 @@ routes.get('/Country/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.post('/Country/', async(req, res) => {
+routes.post('/Country/', verifyToken, async(req, res) => {
 
     try {
         st = await CountryController.createCountry(req.body);
@@ -70,7 +71,7 @@ routes.post('/Country/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.put('/Country/:id', async(req, res) => {
+routes.put('/Country/:id', verifyToken, async(req, res) => {
 
     try {
         st = await CountryController.updateCountry(req.params.id, req.body);
@@ -90,7 +91,7 @@ routes.put('/Country/:id', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.delete('/Country/:id', async(req, res) => {
+routes.delete('/Country/:id', verifyToken, async(req, res) => {
 
     try {
         st = await CountryController.deleteCountry(req.params.id);

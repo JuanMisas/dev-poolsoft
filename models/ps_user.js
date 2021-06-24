@@ -1,26 +1,20 @@
-const Sequelize = require('sequelize'); 
+const Sequelize = require('sequelize');
 const db = require('../server/connection');
 
 // Schema de la tabla ps_user
 const User = db.define('ps_user', {
-    idUser: {
-        type: Sequelize.INTEGER, 
-        primaryKey: true, 
-        autoIncrement: true
-    },
     NameUser: {
-        type: Sequelize.STRING, 
-        required: true, 
-        allowNull: false
+        type: Sequelize.STRING,
+        primaryKey: true
     },
     PasswordUser: {
-        type: Sequelize.STRING, 
-        required: true, 
+        type: Sequelize.STRING,
+        required: true,
         allowNull: false
     },
     RoleUser: {
-        type: Sequelize.INTEGER, 
-        required: true, 
+        type: Sequelize.INTEGER,
+        required: true,
         allowNull: false
     }
 }, {

@@ -2,6 +2,7 @@ const routes = require('express').Router();
 
 const State = require('../../models/ps_state');
 const StateController = require('../../controllers/stateController');
+const { verifyToken } = require('../../controllers/AuthController');
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
@@ -12,7 +13,7 @@ const StateController = require('../../controllers/stateController');
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.get('/State/:id', async(req, res) => {
+routes.get('/State/:id', verifyToken, async(req, res) => {
 
     try {
         st = await StateController.findOneState(req.params.id);
@@ -29,7 +30,7 @@ routes.get('/State/:id', async(req, res) => {
  * Array de objetos json de tipo State
  * [ { atributo1: value1, atributo2: value2 }, { atributo1: value1, atributo2: value2 } ]
  */
-routes.get('/State/', async(req, res) => {
+routes.get('/State/', verifyToken, async(req, res) => {
 
     try {
         st = await StateController.findAllStates();
@@ -40,7 +41,7 @@ routes.get('/State/', async(req, res) => {
 });
 
 
-routes.get('/AllStateCountry/', async(req, res) => {
+routes.get('/AllStateCountry/', verifyToken, async(req, res) => {
 
     try {
         st = await StateController.findAllStateCountry();
@@ -52,7 +53,7 @@ routes.get('/AllStateCountry/', async(req, res) => {
 });
 
 
-routes.get('/StateCountry/:id', async(req, res) => {
+routes.get('/StateCountry/:id', verifyToken, async(req, res) => {
 
     try {
         st = await StateController.findStateCountry(req.params.id);
@@ -74,7 +75,7 @@ routes.get('/StateCountry/:id', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.post('/State/', async(req, res) => {
+routes.post('/State/', verifyToken, async(req, res) => {
 
     try {
         st = await StateController.createState(req.body);
@@ -94,7 +95,7 @@ routes.post('/State/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.put('/State/:id', async(req, res) => {
+routes.put('/State/:id', verifyToken, async(req, res) => {
 
     try {
         st = await StateController.updateState(req.params.id, req.body);
@@ -114,7 +115,7 @@ routes.put('/State/:id', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.delete('/State/:id', async(req, res) => {
+routes.delete('/State/:id', verifyToken, async(req, res) => {
 
     try {
         st = await StateController.deleteState(req.params.id);

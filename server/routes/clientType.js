@@ -2,6 +2,7 @@ const routes = require('express').Router();
 
 const ClientType = require('../../models/ps_clienttype');
 const ClientTypeController = require('../../controllers/ClientTypeController');
+const { verifyToken } = require('../../controllers/AuthController');
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
@@ -12,7 +13,7 @@ const ClientTypeController = require('../../controllers/ClientTypeController');
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.get('/ClientType/:id', async(req, res) => {
+routes.get('/ClientType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await ClientTypeController.findOneClientType(req.params.id);
@@ -29,7 +30,7 @@ routes.get('/ClientType/:id', async(req, res) => {
  * Array de objetos json de tipo ClientType
  * [ { atributo1: value1, atributo2: value2 }, { atributo1: value1, atributo2: value2 } ]
  */
-routes.get('/ClientType/', async(req, res) => {
+routes.get('/ClientType/', verifyToken, async(req, res) => {
 
     try {
         st = await ClientTypeController.findAllClientTypes();
@@ -49,7 +50,7 @@ routes.get('/ClientType/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.post('/ClientType/', async(req, res) => {
+routes.post('/ClientType/', verifyToken, async(req, res) => {
 
     try {
         st = await ClientTypeController.createClientType(req.body);
@@ -69,7 +70,7 @@ routes.post('/ClientType/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.put('/ClientType/:id', async(req, res) => {
+routes.put('/ClientType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await ClientTypeController.updateClientType(req.params.id, req.body);
@@ -89,7 +90,7 @@ routes.put('/ClientType/:id', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.delete('/ClientType/:id', async(req, res) => {
+routes.delete('/ClientType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await ClientTypeController.deleteClientType(req.params.id);

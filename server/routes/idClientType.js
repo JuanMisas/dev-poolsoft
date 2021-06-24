@@ -2,6 +2,7 @@ const routes = require('express').Router();
 
 const IdClientType = require('../../models/ps_idclienttype');
 const IdClientTypeController = require('../../controllers/IdClientTypeController');
+const { verifyToken } = require('../../controllers/AuthController');
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
@@ -12,7 +13,7 @@ const IdClientTypeController = require('../../controllers/IdClientTypeController
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.get('/IdClientType/:id', async(req, res) => {
+routes.get('/IdClientType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await IdClientTypeController.findOneIdClientType(req.params.id);
@@ -29,7 +30,7 @@ routes.get('/IdClientType/:id', async(req, res) => {
  * Array de objetos json de tipo IdClientType
  * [ { atributo1: value1, atributo2: value2 }, { atributo1: value1, atributo2: value2 } ]
  */
-routes.get('/IdClientType/', async(req, res) => {
+routes.get('/IdClientType/', verifyToken, async(req, res) => {
 
     try {
         st = await IdClientTypeController.findAllIdClientTypes();
@@ -49,7 +50,7 @@ routes.get('/IdClientType/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.post('/IdClientType/', async(req, res) => {
+routes.post('/IdClientType/', verifyToken, async(req, res) => {
 
     try {
         st = await IdClientTypeController.createIdClientType(req.body);
@@ -69,7 +70,7 @@ routes.post('/IdClientType/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.put('/IdClientType/:id', async(req, res) => {
+routes.put('/IdClientType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await IdClientTypeController.updateIdClientType(req.params.id, req.body);
@@ -89,7 +90,7 @@ routes.put('/IdClientType/:id', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.delete('/IdClientType/:id', async(req, res) => {
+routes.delete('/IdClientType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await IdClientTypeController.deleteIdClientType(req.params.id);

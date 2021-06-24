@@ -1,6 +1,7 @@
 const routes = require('express').Router();
 const Role = require('../../models/ps_role');
 const RoleController = require('../../controllers/roleController');
+const { verifyToken } = require('../../controllers/AuthController');
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
@@ -28,7 +29,7 @@ routes.get('/Role/:id', async(req, res) => {
  * Array de objetos json de tipo Role
  * [ { atributo1: value1, atributo2: value2 }, { atributo1: value1, atributo2: value2 } ]
  */
-routes.get('/Role/', async(req, res) => {
+routes.get('/Role/', verifyToken, async(req, res) => {
 
     try {
         st = await RoleController.findAllRole();
@@ -48,7 +49,7 @@ routes.get('/Role/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.post('/Role/', async(req, res) => {
+routes.post('/Role/', verifyToken, async(req, res) => {
 
     try {
         st = await RoleController.createRole(req.body);
@@ -68,7 +69,7 @@ routes.post('/Role/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.put('/Role/:id', async(req, res) => {
+routes.put('/Role/:id', verifyToken, async(req, res) => {
 
     try {
         st = await RoleController.updateRole(req.params.id, req.body);
@@ -88,7 +89,7 @@ routes.put('/Role/:id', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.delete('/Role/:id', async(req, res) => {
+routes.delete('/Role/:id', verifyToken, async(req, res) => {
 
     try {
         st = await RoleController.deleteRole(req.params.id);

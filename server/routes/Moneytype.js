@@ -2,6 +2,7 @@ const routes = require('express').Router();
 
 const MoneyType = require('../../models/ps_moneytype');
 const MoneyTypeController = require('../../controllers/MoneyTypeController');
+const { verifyToken } = require('../../controllers/AuthController');
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
@@ -12,7 +13,7 @@ const MoneyTypeController = require('../../controllers/MoneyTypeController');
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.get('/MoneyType/:id', async(req, res) => {
+routes.get('/MoneyType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await MoneyTypeController.findOneMoneyType(req.params.id);
@@ -29,7 +30,7 @@ routes.get('/MoneyType/:id', async(req, res) => {
  * Array de objetos json de tipo MoneyType
  * [ { atributo1: value1, atributo2: value2 }, { atributo1: value1, atributo2: value2 } ]
  */
-routes.get('/MoneyType/', async(req, res) => {
+routes.get('/MoneyType/', verifyToken, async(req, res) => {
 
     try {
         st = await MoneyTypeController.findAllMoneyTypes();
@@ -49,7 +50,7 @@ routes.get('/MoneyType/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.post('/MoneyType/', async(req, res) => {
+routes.post('/MoneyType/', verifyToken, async(req, res) => {
 
     try {
         st = await MoneyTypeController.createMoneyType(req.body);
@@ -69,7 +70,7 @@ routes.post('/MoneyType/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.put('/MoneyType/:id', async(req, res) => {
+routes.put('/MoneyType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await MoneyTypeController.updateMoneyType(req.params.id, req.body);
@@ -89,7 +90,7 @@ routes.put('/MoneyType/:id', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.delete('/MoneyType/:id', async(req, res) => {
+routes.delete('/MoneyType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await MoneyTypeController.deleteMoneyType(req.params.id);

@@ -2,8 +2,7 @@ const routes = require('express').Router();
 
 const City = require('../../models/ps_city');
 const CityController = require('../../controllers/CityController');
-const { route } = require('./Login');
-const { count } = require('../../models/ps_city');
+const { verifyToken } = require('../../controllers/AuthController');
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
@@ -14,7 +13,7 @@ const { count } = require('../../models/ps_city');
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.get('/City/:id', async(req, res) => {
+routes.get('/City/:id', verifyToken, async(req, res) => {
 
     try {
         st = await CityController.findOneCity(req.params.id);
@@ -31,7 +30,7 @@ routes.get('/City/:id', async(req, res) => {
  * Array de objetos json de tipo City
  * [ { atributo1: value1, atributo2: value2 }, { atributo1: value1, atributo2: value2 } ]
  */
-routes.get('/City/', async(req, res) => {
+routes.get('/City/', verifyToken, async(req, res) => {
 
     try {
         st = await CityController.findAllCities();
@@ -41,7 +40,7 @@ routes.get('/City/', async(req, res) => {
 
 });
 
-routes.get('/CityAll/', async(req, res) => {
+routes.get('/CityAll/', verifyToken, async(req, res) => {
     try {
         st = await CityController.findAllCityStateCountry();
     } finally {
@@ -59,7 +58,7 @@ routes.get('/CityAll/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.post('/City/', async(req, res) => {
+routes.post('/City/', verifyToken, async(req, res) => {
 
     try {
         st = await CityController.createCity(req.body);
@@ -79,7 +78,7 @@ routes.post('/City/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.put('/City/:id', async(req, res) => {
+routes.put('/City/:id', verifyToken, async(req, res) => {
 
     try {
         st = await CityController.updateCity(req.params.id, req.body);
@@ -99,7 +98,7 @@ routes.put('/City/:id', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.delete('/City/:id', async(req, res) => {
+routes.delete('/City/:id', verifyToken, async(req, res) => {
 
     try {
         st = await CityController.deleteCity(req.params.id);

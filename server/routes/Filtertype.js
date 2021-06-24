@@ -2,6 +2,7 @@ const routes = require('express').Router();
 
 const FilterType = require('../../models/ps_filtertype');
 const FilterTypeController = require('../../controllers/FilterTypeController');
+const { verifyToken } = require('../../controllers/AuthController');
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
@@ -12,7 +13,7 @@ const FilterTypeController = require('../../controllers/FilterTypeController');
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.get('/FilterType/:id', async(req, res) => {
+routes.get('/FilterType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await FilterTypeController.findOneFilterType(req.params.id);
@@ -29,7 +30,7 @@ routes.get('/FilterType/:id', async(req, res) => {
  * Array de objetos json de tipo FilterType
  * [ { atributo1: value1, atributo2: value2 }, { atributo1: value1, atributo2: value2 } ]
  */
-routes.get('/FilterType/', async(req, res) => {
+routes.get('/FilterType/', verifyToken, async(req, res) => {
 
     try {
         st = await FilterTypeController.findAllFilterTypes();
@@ -49,7 +50,7 @@ routes.get('/FilterType/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.post('/FilterType/', async(req, res) => {
+routes.post('/FilterType/', verifyToken, async(req, res) => {
 
     try {
         st = await FilterTypeController.createFilterType(req.body);
@@ -69,7 +70,7 @@ routes.post('/FilterType/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.put('/FilterType/:id', async(req, res) => {
+routes.put('/FilterType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await FilterTypeController.updateFilterType(req.params.id, req.body);
@@ -89,7 +90,7 @@ routes.put('/FilterType/:id', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.delete('/FilterType/:id', async(req, res) => {
+routes.delete('/FilterType/:id', verifyToken, async(req, res) => {
 
     try {
         st = await FilterTypeController.deleteFilterType(req.params.id);

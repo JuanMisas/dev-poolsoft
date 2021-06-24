@@ -1,6 +1,7 @@
 const routes = require('express').Router();
 const UserController = require('../../controllers/userController');
 const User = require('../../models/ps_user');
+const { verifyToken } = require('../../controllers/AuthController');
 
 
 /**
@@ -12,10 +13,10 @@ const User = require('../../models/ps_user');
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.get('/User/:id', async(req, res) => {
+routes.get('/User/:name', verifyToken, async(req, res) => {
 
     try {
-        st = await UserController.findUserById(req.params.id);
+        st = await UserController.findUserById(req.params.name);
         res.send(st);
     } catch (err) {
         res.status(400).send(err);
@@ -28,7 +29,7 @@ routes.get('/User/:id', async(req, res) => {
  * Array de objetos json de tipo User
  * [ { atributo1: value1, atributo2: value2 }, { atributo1: value1, atributo2: value2 } ]
  */
-routes.get('/User/', async(req, res) => {
+routes.get('/User/', verifyToken, async(req, res) => {
 
     try {
         st = await UserController.findAllUser();
@@ -48,7 +49,7 @@ routes.get('/User/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.post('/User/', async(req, res) => {
+routes.post('/User/', verifyToken, async(req, res) => {
 
     try {
         st = await UserController.createUser(req.body);
@@ -68,10 +69,10 @@ routes.post('/User/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.put('/User/:id', async(req, res) => {
+routes.put('/User/:name', verifyToken, async(req, res) => {
 
     try {
-        st = await UserController.updateUser(req.params.id, req.body);
+        st = await UserController.updateUser(req.params.name, req.body);
         res.send(st);
     } catch (err) {
         res.status(400).send(err);
@@ -88,10 +89,10 @@ routes.put('/User/:id', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.delete('/User/:id', async(req, res) => {
+routes.delete('/User/:name', verifyToken, async(req, res) => {
 
     try {
-        st = await UserController.deleteUser(req.params.id);
+        st = await UserController.deleteUser(req.params.name);
         res.send(st);
     } catch (err) {
         res.status(400).send(err);

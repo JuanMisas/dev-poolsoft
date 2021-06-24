@@ -2,6 +2,7 @@ const routes = require('express').Router();
 
 const PoolCustomer = require('../../models/ps_poolcustomers');
 const PoolCustomerController = require('../../controllers/poolCustomerController');
+const { verifyToken } = require('../../controllers/AuthController');
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
@@ -12,7 +13,7 @@ const PoolCustomerController = require('../../controllers/poolCustomerController
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.get('/PoolCustomer/:id', async(req, res) => {
+routes.get('/PoolCustomer/:id', verifyToken, async(req, res) => {
 
     try {
         st = await PoolCustomerController.findOnePoolCustomer(req.params.id);
@@ -29,7 +30,7 @@ routes.get('/PoolCustomer/:id', async(req, res) => {
  * Array de objetos json de tipo PoolCustomer
  * [ { atributo1: value1, atributo2: value2 }, { atributo1: value1, atributo2: value2 } ]
  */
-routes.get('/PoolCustomer/', async(req, res) => {
+routes.get('/PoolCustomer/', verifyToken, async(req, res) => {
 
     try {
         st = await PoolCustomerController.findAllPoolCustomers();
@@ -49,7 +50,7 @@ routes.get('/PoolCustomer/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.post('/PoolCustomer/', async(req, res) => {
+routes.post('/PoolCustomer/', verifyToken, async(req, res) => {
 
     try {
         st = await PoolCustomerController.createPoolCustomer(req.body);
@@ -69,7 +70,7 @@ routes.post('/PoolCustomer/', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.put('/PoolCustomer/:id', async(req, res) => {
+routes.put('/PoolCustomer/:id', verifyToken, async(req, res) => {
 
     try {
         st = await PoolCustomerController.updatePoolCustomer(req.params.id, req.body);
@@ -89,7 +90,7 @@ routes.put('/PoolCustomer/:id', async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.delete('/PoolCustomer/:id', async(req, res) => {
+routes.delete('/PoolCustomer/:id', verifyToken, async(req, res) => {
 
     try {
         st = await PoolCustomerController.deletePoolCustomer(req.params.id);
