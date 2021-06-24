@@ -78,7 +78,6 @@ module.exports = {
     },
 
     verifyToken(req, res, next) {
-        console.log(req.headers);
         if (!req.headers.authorization) {
             return res.status(402).send('Unauthorized Request');
         }
