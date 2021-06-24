@@ -79,12 +79,12 @@ module.exports = {
 
     verifyToken(req, res, next) {
         if (!req.headers.authorization) {
-            return res.status(402).send('Unauthorized Request');
+            return res.status(400).send('Unauthorized Request');
         }
 
         const token = req.headers.authorization.split(' ')[1];
         if (token === 'null') {
-            return res.status(401).send('Unauthorized Request');
+            return res.status(400).send('Unauthorized Request');
         }
 
         const payload = jwt.verify(token, 'secretKey');
