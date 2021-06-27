@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const CLIENTTYPE = require('../models/ps_clienttype');
+const CUSTOMERTYPE = require('../models/ps_customertype');
 const server = require('../server/server');
 
 module.exports = {
@@ -9,7 +9,7 @@ module.exports = {
      * Variables de entrada: tipo, id, body.
      * Retorna: un arreglo con los mensajes de error. Si no hay errores, retorna un arreglo vacío.
      */
-    async validateClientType(tipo, id, body) {
+    async validateCustomerType(tipo, id, body) {
 
         err = [];
 
@@ -18,8 +18,8 @@ module.exports = {
             if (id == undefined) {
                 err.push('El ID del tipo de cliente no puede ser nulo.');
             }
-            if (!(await this.existsIdClientType(id))) {
-                err.push('El tipo de cliente no existe.');
+            if (!(await this.existsIdCustomerType(id))) {
+                err.push('El tipo de Cliente no existe.');
             }
             return err;
 
@@ -29,12 +29,12 @@ module.exports = {
 
         } else if (tipo == 'create') {
 
-            if (body.idClientType) {
-                if (await this.existsIdClientType(body.idClientType)) {
-                    err.push('El tipo de cliente ya existe.');
+            if (body.idcustomerType) {
+                if (await this.existsIdCustomerType(body.idCustomerType)) {
+                    err.push('El tipo de Cliente ya existe.');
                 }
             }
-            if (body.NameClientType == null || body.NameClientType == "") {
+            if (body.NameCustomerType == null || body.NameCustomerType == "") {
                 err.push('El nombre no puede ser vacío.');
             }
             return err;
@@ -42,12 +42,12 @@ module.exports = {
         } else if (tipo == 'update') {
 
             if (id == undefined) {
-                err.push('El ID del tipo de cliente no puede ser nulo.');
+                err.push('El ID del tipo de Cliente no puede ser nulo.');
             }
-            if (!(await this.existsIdClientType(id))) {
-                err.push('El tipo de cliente no existe.');
+            if (!(await this.existsIdCustomerType(id))) {
+                err.push('El tipo de Cliente no existe.');
             }
-            if (body.NameClientType == null || body.NameClientType == "") {
+            if (body.NameCustomerType == null || body.NameCustomerType == "") {
                 err.push('El nombre no puede ser vacío.');
             }
             return err;
@@ -55,10 +55,10 @@ module.exports = {
         } else if (tipo == 'delete') {
 
             if (id == undefined) {
-                err.push('El ID del tipo de cliente no puede ser nulo.');
+                err.push('El ID del tipo de Cliente no puede ser nulo.');
             }
-            if (!(await this.existsIdClientType(id))) {
-                err.push('El tipo de cliente no existe.');
+            if (!(await this.existsIdCustomerType(id))) {
+                err.push('El tipo de Cliente no existe.');
             }
             return err;
 
@@ -71,45 +71,45 @@ module.exports = {
 
     /**
      * @param {id} id 
-     * @returns Objeto ClientType o array de errores
+     * @returns Objeto CustomerType o array de errores
      */
-    async findOneClientType(id) {
-        const err = await this.validateClientType('find_one', id, {});
+    async findOneCustomerType(id) {
+        const err = await this.validateCustomerType('find_one', id, {});
         if (err.length > 0) {
             throw err;
         }
 
-        const ClientType = await CLIENTTYPE.findByPk(id);
-        return ClientType;
+        const customerType = await CustomerType.findByPk(id);
+        return customerType;
     },
 
     /**
      * 
-     * @returns Array de objetos ClientType
+     * @returns Array de objetos CustomerType
      */
-    async findAllClientTypes() {
-        // const err = await this.validateClientType('find_all', {}, {});
+    async findAllCustomerTypes() {
+        // const err = await this.validateCustomerType('find_all', {}, {});
         // if (err.length > 0) {
         //     throw err;
         // }
 
-        const ClientType = await CLIENTTYPE.findAll({ where: {} });
-        return ClientType;
+        const customerType = await CustomerType.findAll({ where: {} });
+        return customerType;
     },
 
     /**
      * 
      * @param {body} body 
-     * @returns Objeto ClientType o array de errores
+     * @returns Objeto CustomerType o array de errores
      */
-    async createClientType(body) {
-        const err = await this.validateClientType('create', {}, body);
+    async createCustomerType(body) {
+        const err = await this.validateCustomerType('create', {}, body);
         if (err.length > 0) {
             throw err;
         }
 
-        const ClientType = await CLIENTTYPE.create(body);
-        return ClientType;
+        const customerType = await CustomerType.create(body);
+        return customerType;
     },
 
     /**
@@ -118,15 +118,15 @@ module.exports = {
      * @param {body} body  
      * @returns Variable boolean true o array de errores
      */
-    async updateClientType(id, body) {
-        const err = await this.validateClientType('update', id, body);
+    async updateCustomerType(id, body) {
+        const err = await this.validateCustomerType('update', id, body);
         if (err.length > 0) {
             throw err;
         }
 
-        body.idClientType = id;
-        const ClientType = await CLIENTTYPE.update(body, { where: { idClientType: id } });
-        if (ClientType[0] == 1) {
+        body.idCustomerType = id;
+        const customerType = await CustomerType.update(body, { where: { idCustomerType: id } });
+        if (customerType[0] == 1) {
             return true;
         }
     },
@@ -136,14 +136,14 @@ module.exports = {
      * @param {id} id 
      * @returns Variable boolean true o array de errores
      */
-    async deleteClientType(id) {
-        const err = await this.validateClientType('delete', id, {});
+    async deleteCustomerType(id) {
+        const err = await this.validateCustomerType('delete', id, {});
         if (err.length > 0) {
             throw err;
         }
 
-        const ClientType = await CLIENTTYPE.destroy({ where: { idClientType: id } });
-        if (ClientType == 1) {
+        const customerType = await CustomerType.destroy({ where: { idCustomerType: id } });
+        if (customerType == 1) {
             return true;
         }
     },
@@ -153,8 +153,8 @@ module.exports = {
     //  ===========================
 
     /** Devuelve true si lo encuentra, sino devuelve false */
-    async existsIdClientType(id) {
-        aux = await CLIENTTYPE.findByPk(id).catch(function() {
+    async existsIdCustomerType(id) {
+        aux = await CustomerType.findByPk(id).catch(function() {
             console.log("Promise Rejected");
         });
         if (aux == null) {

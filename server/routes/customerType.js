@@ -1,22 +1,22 @@
 const routes = require('express').Router();
 
-const ClientType = require('../../models/ps_clienttype');
-const ClientTypeController = require('../../controllers/ClientTypeController');
+const CustomerType = require('../../models/ps_customertype');
+const CustomerTypeController = require('../../controllers/CustomerTypeController');
 const { verifyToken } = require('../../controllers/AuthController');
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
- * Objeto json de tipo ClientType
+ * Objeto json de tipo CustomerType
  * { atributo1: value1, atributo2: value2 }
  * 
  * ==== RETURN SI HAY ERROR ====
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.get('/ClientType/:id', verifyToken, async(req, res) => {
+routes.get('/CustomerType/:id', verifyToken, async(req, res) => {
 
     try {
-        st = await ClientTypeController.findOneClientType(req.params.id);
+        st = await CustomerTypeController.findOneCustomerType(req.params.id);
         res.send(st);
     } catch (err) {
         res.status(400).send(err);
@@ -27,13 +27,13 @@ routes.get('/ClientType/:id', verifyToken, async(req, res) => {
 
 /**
  * ==== RETURN ====
- * Array de objetos json de tipo ClientType
+ * Array de objetos json de tipo CustomerType
  * [ { atributo1: value1, atributo2: value2 }, { atributo1: value1, atributo2: value2 } ]
  */
-routes.get('/ClientType/', verifyToken, async(req, res) => {
+routes.get('/CustomerType/', verifyToken, async(req, res) => {
 
     try {
-        st = await ClientTypeController.findAllClientTypes();
+        st = await CustomerTypeController.findAllCustomerTypes();
     } finally {
         res.send(st);
     }
@@ -43,17 +43,17 @@ routes.get('/ClientType/', verifyToken, async(req, res) => {
 
 /**
  * ==== RETURN SI NO HAY ERROR ====
- * Objeto json de tipo ClientType
+ * Objeto json de tipo CustomerType
  * { atributo1: value1, atributo2: value2 }
  * 
  * ==== RETURN SI HAY ERROR ====
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.post('/ClientType/', verifyToken, async(req, res) => {
+routes.post('/CustomerType/', verifyToken, async(req, res) => {
 
     try {
-        st = await ClientTypeController.createClientType(req.body);
+        st = await CustomerTypeController.createCustomerType(req.body);
         res.send(st);
     } catch (err) {
         res.status(400).send(err);
@@ -70,10 +70,10 @@ routes.post('/ClientType/', verifyToken, async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.put('/ClientType/:id', verifyToken, async(req, res) => {
+routes.put('/CustomerType/:id', verifyToken, async(req, res) => {
 
     try {
-        st = await ClientTypeController.updateClientType(req.params.id, req.body);
+        st = await CustomerTypeController.updateCustomerType(req.params.id, req.body);
         res.send(st);
     } catch (err) {
         res.status(400).send(err);
@@ -90,10 +90,10 @@ routes.put('/ClientType/:id', verifyToken, async(req, res) => {
  * Array con errores
  * [ 'mensaje_de_error_1', 'mensaje_de_error_2' ]
  */
-routes.delete('/ClientType/:id', verifyToken, async(req, res) => {
+routes.delete('/CustomerType/:id', verifyToken, async(req, res) => {
 
     try {
-        st = await ClientTypeController.deleteClientType(req.params.id);
+        st = await CustomerTypeController.deleteCustomerType(req.params.id);
         res.send(st);
     } catch (err) {
         res.status(400).send(err);

@@ -1,14 +1,14 @@
 const Sequelize = require('sequelize');
 const db = require('../server/connection');
 
-// Schema de la tabla ps_clienttype
-const ClientType = db.define('ps_clienttype', {
-    idClientType: {
+// Schema de la tabla ps_customertype
+const CustomerType = db.define('ps_clcustomertype', {
+    idCustomerType: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    NameClientType: {
+    NameCustomerType: {
         type: Sequelize.STRING,
         required: true,
         allowNull: false
@@ -17,4 +17,4 @@ const ClientType = db.define('ps_clienttype', {
     freezeTableName: true
 })
 
-module.exports = ClientType;
+module.exports = CustomerType;
