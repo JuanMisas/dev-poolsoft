@@ -79,7 +79,7 @@ module.exports = {
             throw err;
         }
 
-        const customerType = await CustomerType.findByPk(id);
+        const customerType = await CUSTOMERTYPE.findByPk(id);
         return customerType;
     },
 
@@ -93,7 +93,7 @@ module.exports = {
         //     throw err;
         // }
 
-        const customerType = await CustomerType.findAll({ where: {} });
+        const customerType = await CUSTOMERTYPE.findAll({ where: {} });
         return customerType;
     },
 
@@ -108,7 +108,7 @@ module.exports = {
             throw err;
         }
 
-        const customerType = await CustomerType.create(body);
+        const customerType = await CUSTOMERTYPE.create(body);
         return customerType;
     },
 
@@ -125,7 +125,7 @@ module.exports = {
         }
 
         body.idCustomerType = id;
-        const customerType = await CustomerType.update(body, { where: { idCustomerType: id } });
+        const customerType = await CUSTOMERTYPE.update(body, { where: { idCustomerType: id } });
         if (customerType[0] == 1) {
             return true;
         }
@@ -142,7 +142,7 @@ module.exports = {
             throw err;
         }
 
-        const customerType = await CustomerType.destroy({ where: { idCustomerType: id } });
+        const customerType = await CUSTOMERTYPE.destroy({ where: { idCustomerType: id } });
         if (customerType == 1) {
             return true;
         }
@@ -154,7 +154,7 @@ module.exports = {
 
     /** Devuelve true si lo encuentra, sino devuelve false */
     async existsIdCustomerType(id) {
-        aux = await CustomerType.findByPk(id).catch(function() {
+        aux = await CUSTOMERTYPE.findByPk(id).catch(function() {
             console.log("Promise Rejected");
         });
         if (aux == null) {
