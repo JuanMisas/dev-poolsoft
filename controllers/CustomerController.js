@@ -44,83 +44,105 @@ module.exports = {
                     err.push('El cliente ya existe.');
                 }
             }
+            console.log('punto 1')
             if (body.NameCustomer == null || body.NameCustomer == "") {
                 err.push('El nombre no puede ser vacío.');
             }
+            console.log('punto 2')
             if (body.TypePayCustomers == null || body.TypePayCustomers == "") {
                 err.push('El ID del tipo de pago no puede ser vacío.');
             }
+            console.log('punto 3')
             if (body.TypePayCustomers) {
                 if (!(await PayTypeController.existsIdPayType(body.TypePayCustomers))) {
                     err.push('El tipo de pago no existe.');
                 }
             }
+            console.log('punto 4')
             if (body.IdNumberCustomers == null || body.IdNumberCustomers == "") {
                 err.push('El número de clientes no puede ser vacío.');
             }
+            console.log('punto 5')
             if (body.IdClientTypeCustomers == null || body.IdClientTypeCustomers == "") {
                 err.push('El ID del tipo de cliente no puede ser vacío.');
             }
+            console.log('punto 5')
             if (body.IdClientTypeCustomers) {
-                if (!(await ClientTypeController.existsIdClientType(body.IdClientTypeCustomers))) {
+                if (!(await ClientTypeController.existsIdCustomerType(body.IdClientTypeCustomers))) {
                     err.push('El tipo de cliente no existe.');
                 }
             }
+            console.log('punto 6')
             if (body.StatusCustomers == null || body.StatusCustomers == "") {
                 err.push('El status del cliente no puede ser vacío.');
             }
+            console.log('punto 7')
             if (body.IdIdClientTypeCustomers == null || body.IdIdClientTypeCustomers == "") {
                 err.push('El ID del tipo de identificación de cliente no puede ser vacío.');
             }
+            console.log('punto 8')
             if (body.IdIdClientTypeCustomers) {
                 if (!(await IdClientTypeController.existsIdIdClientType(body.IdIdClientTypeCustomers))) {
                     err.push('El tipo de identificación de cliente no existe.');
                 }
             }
+            console.log('punto 9')
             if (body.AddressBillCustomers == null || body.AddressBillCustomers == "") {
                 err.push('La dirección de pago del cliente no puede ser vacío.');
             }
+            console.log('punto 10')
             if (body.CountryBillCustomers == null || body.CountryBillCustomers == "") {
                 err.push('El ID del país de pago del cliente no puede ser vacío.');
             }
+            console.log('punto 11')
             if (body.CountryBillCustomers) {
                 if (!(await CountryController.existsIdCountry(body.CountryBillCustomers))) {
                     err.push('El país de pago del cliente no existe.');
                 }
             }
+            console.log('punto 12')
             if (body.EstateBillcustomers == null || body.EstateBillcustomers == "") {
                 err.push('El ID del estado desde donde paga el cliente no puede ser vacío.');
             }
+            console.log('punto 13')
             if (body.EstateBillcustomers) {
                 if (!(await StateController.existsIdState(body.EstateBillcustomers))) {
                     err.push('El estado desde donde paga el cliente no existe.');
                 }
             }
+            console.log('punto 14')
             if (body.CityBillCustomers == null || body.CityBillCustomers == "") {
                 err.push('El ID de la ciudad desde donde paga el cliente no puede ser vacío.');
             }
+            console.log('punto 15')
             if (body.CityBillCustomers) {
                 if (!(await CityController.existsIdCity(body.CityBillCustomers))) {
                     err.push('La ciudad desde donde paga el cliente no existe.');
                 }
             }
+            console.log('punto 16')
             if (body.FeeCustomers == null || body.FeeCustomers == "") {
                 err.push('El impuesto del cliente no puede ser vacío.');
             }
+            console.log('punto 17')
             if (body.IdTypeMoneycustomers == null || body.IdTypeMoneycustomers == "") {
                 err.push('El ID del tipo de moneda del cliente no puede ser vacío.');
             }
+            console.log('punto 18')
             if (body.IdTypeMoneycustomers) {
                 if (!(await MoneyTypeController.existsIdMoneyType(body.IdTypeMoneycustomers))) {
                     err.push('El tipo de moneda del cliente no existe.');
                 }
             }
+            console.log('punto 19')
             if (body.Phone1customer == null || body.Phone1customer == "") {
                 err.push('El número de teléfono 1 no puede ser vacío.');
             }
+            console.log('punto 20')
             if (body.Emailcustomer == null || body.Emailcustomer == "") {
                 err.push('El E-mail no puede ser vacío.');
             }
+            console.log('punto 21')
             return err;
 
         } else if (tipo == 'update') {
@@ -262,6 +284,7 @@ module.exports = {
      */
     async createCustomer(body) {
         const err = await this.validateCustomer('create', {}, body);
+        console.log('llego')
         if (err.length > 0) {
             throw err;
         }
