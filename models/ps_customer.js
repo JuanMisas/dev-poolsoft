@@ -12,7 +12,7 @@ const customer = db.define('ps_customers', {
         required: true,
         allowNull: false
     },
-    DateEnterCustomers: {
+    DateEnterCustomers : {
         type: Sequelize.DATEONLY,
         required: true,
         allowNull: false,
@@ -29,7 +29,7 @@ const customer = db.define('ps_customers', {
         allowNull: false,
         unique: true
     },
-    IdClientTypeCustomers: {
+    IdIdClientTypeCustomers: {
         type: Sequelize.INTEGER,
         required: true,
         allowNull: false
@@ -40,7 +40,7 @@ const customer = db.define('ps_customers', {
         allowNull: false,
         defaultValue: 1
     },
-    IdIdClientTypeCustomers: {
+    IdClientTypeCustomers: {
         type: Sequelize.INTEGER,
         required: true,
         allowNull: false
